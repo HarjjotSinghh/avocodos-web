@@ -13,7 +13,7 @@ export default function Page() {
   return (
     <main className="flex h-screen w-full items-center justify-center">
       <div className="flex h-full w-full items-center justify-center overflow-hidden bg-background">
-        <div className="w-full space-y-10 overflow-y-auto md:p-16 p-4 md:max-w-lg">
+        <div className="w-full space-y-10 overflow-y-auto p-4 md:max-w-lg md:p-16">
           <div>
             <h1 className="text-left text-3xl font-bold">Login to Avocodos</h1>
             <p className="mt-2 text-pretty text-left text-muted-foreground">
@@ -28,7 +28,7 @@ export default function Page() {
               <div className="h-px flex-1 bg-muted" />
             </div> */}
             <LoginForm />
-            <Link href="/signup" className="block text-center hover:underline">
+            <Link href="/signup" className="block text-center">
               Don&apos;t have an account? Sign up
             </Link>
           </div>

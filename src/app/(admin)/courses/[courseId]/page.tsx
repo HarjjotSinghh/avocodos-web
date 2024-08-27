@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import CourseDetails from "@/components/CourseDetails";
 import CourseDetailsSkeleton from "@/components/skeletons/CourseDetailsSkeleton";
+import Link from "next/link";
 
 interface PageProps {
   params: { courseId: string };
@@ -49,24 +50,32 @@ export async function generateMetadata({
   };
 }
 
-export default async function CoursePage({ params: { courseId } }: PageProps) {
+export default function CoursePage({ params: { courseId } }: PageProps) {
+  return (
+    <main className="container mx-auto py-8">
+      <Suspense fallback={<CourseDetailsSkeleton />}>
+        <CourseContent courseId={courseId} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function CourseContent({ courseId }: { courseId: string }) {
   const { user } = await validateRequest();
 
   if (!user) {
     return (
       <p className="text-destructive">
-        You&apos;re not authorized to view this page.
+        You&apos;re not authorized to view this page. Please{" "}
+        <Link href="/login" className="underline">
+          login
+        </Link>{" "}
+        to continue.
       </p>
     );
   }
 
   const course = await getCourse(courseId);
 
-  return (
-    <main className="container mx-auto py-8">
-      <Suspense fallback={<CourseDetailsSkeleton />}>
-        <CourseDetails course={course} />
-      </Suspense>
-    </main>
-  );
+  return <CourseDetails course={course} />;
 }

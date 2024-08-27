@@ -7,7 +7,7 @@ import {
   ChannelList,
   ChannelPreviewMessenger,
   ChannelPreviewUIComponentProps,
-  useChatContext,
+  useChatContext
 } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
 import NewChatDialog from "./NewChatDialog";
@@ -40,21 +40,21 @@ export default function ChatSidebar({ open, onClose }: ChatSidebarProps) {
         }}
       />
     ),
-    [onClose],
+    [onClose]
   );
 
   return (
     <div
       className={cn(
         "size-full flex-col border-e md:flex md:w-72",
-        open ? "flex" : "hidden",
+        open ? "flex" : "hidden"
       )}
     >
       <MenuHeader onClose={onClose} />
       <ChannelList
         filters={{
           type: "messaging",
-          members: { $in: [user.id] },
+          members: { $in: [user.id] }
         }}
         showChannelSearch
         options={{ state: true, presence: true, limit: 8 }}
@@ -63,9 +63,9 @@ export default function ChatSidebar({ open, onClose }: ChatSidebarProps) {
           searchForChannels: true,
           searchQueryParams: {
             channelFilters: {
-              filters: { members: { $in: [user.id] } },
-            },
-          },
+              filters: { members: { $in: [user.id] } }
+            }
+          }
         }}
         Preview={ChannelPreviewCustom}
       />
@@ -88,7 +88,7 @@ function MenuHeader({ onClose }: MenuHeaderProps) {
             <X className="size-5" />
           </Button>
         </div>
-        <h1 className="me-auto text-xl font-bold md:ms-2">Messages</h1>
+        <h4 className="me-auto text-xl font-bold md:ms-2">Messages</h4>
         <Button
           size="icon"
           variant="ghost"

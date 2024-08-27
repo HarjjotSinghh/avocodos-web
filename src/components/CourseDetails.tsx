@@ -17,6 +17,7 @@ import {
   Users
 } from "lucide-react";
 import Link from "next/link";
+import CourseDetailsSkeleton from "./skeletons/CourseDetailsSkeleton";
 
 interface CourseDetailsProps {
   course: Course & {

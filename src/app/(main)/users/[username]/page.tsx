@@ -67,9 +67,9 @@ export default async function Page({ params: { username } }: PageProps) {
       <div className="w-full min-w-0 space-y-5">
         <UserProfile user={user} loggedInUserId={loggedInUser.id} />
         <div className="rounded-2xl bg-card p-5 shadow-sm">
-          <h2 className="text-center text-2xl font-bold">
+          <h4 className="text-center text-2xl font-bold">
             {user.displayName}&apos;s posts
-          </h2>
+          </h4>
         </div>
         <UserPosts userId={user.id} />
       </div>
@@ -101,7 +101,7 @@ async function UserProfile({ user, loggedInUserId }: UserProfileProps) {
       <div className="flex flex-wrap gap-3 sm:flex-nowrap">
         <div className="me-auto space-y-3">
           <div>
-            <h1 className="text-3xl font-bold">{user.displayName}</h1>
+            <h5 className="text-3xl font-bold">{user.displayName}</h5>
             <div className="text-muted-foreground">@{user.username}</div>
           </div>
           <div>Member since {formatDate(user.createdAt, "MMM d, yyyy")}</div>

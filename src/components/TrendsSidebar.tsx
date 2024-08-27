@@ -53,7 +53,7 @@ async function WhoToFollow() {
             >
               <UserAvatar avatarUrl={user.avatarUrl} className="flex-none" />
               <div>
-                <p className="line-clamp-1 break-all font-semibold hover:underline">
+                <p className="line-clamp-1 break-all font-semibold">
                   {user.displayName}
                 </p>
                 <p className="line-clamp-1 break-all text-muted-foreground">
@@ -109,10 +109,7 @@ async function TrendingTopics() {
 
         return (
           <Link key={title} href={`/hashtag/${title}`} className="block">
-            <p
-              className="line-clamp-1 break-all font-semibold hover:underline"
-              title={hashtag}
-            >
+            <p className="line-clamp-1 break-all font-semibold" title={hashtag}>
               {hashtag}
             </p>
             <p className="text-sm text-muted-foreground">

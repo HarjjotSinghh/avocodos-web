@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-10 bg-background/80 backdrop-blur">
+    <header className="sticky top-0 z-10 border-b border-muted bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-8 px-4 py-3.5 lg:px-8">
         <Link href="/" className="text-2xl font-bold text-primary">
           <Image
@@ -24,7 +24,9 @@ export default function Navbar() {
           />
         </Link>
         <div className="flex flex-row items-center justify-center gap-8">
-          <SearchField />
+          <div className="hidden sm:block">
+            <SearchField />
+          </div>
           <UserButton className="" />
         </div>
       </div>

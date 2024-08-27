@@ -89,7 +89,7 @@ async function UserInfoSidebar({ user }: UserInfoSidebarProps) {
         >
           <UserAvatar avatarUrl={user.avatarUrl} className="flex-none" />
           <div>
-            <p className="line-clamp-1 break-all font-semibold hover:underline">
+            <p className="line-clamp-1 break-all font-semibold">
               {user.displayName}
             </p>
             <p className="line-clamp-1 break-all text-muted-foreground">

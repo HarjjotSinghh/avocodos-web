@@ -6,7 +6,7 @@ export default function CourseDetailsSkeleton() {
     <div className="grid gap-8 md:grid-cols-3">
       <div className="md:col-span-2">
         <Card>
-          <Skeleton className="h-[675px] w-full rounded-t-lg" />
+          <Skeleton className="h-[300px] w-full rounded-t-lg" />
           <CardHeader>
             <Skeleton className="h-9 w-3/4" />
           </CardHeader>

@@ -27,7 +27,7 @@ export default function Comment({ comment }: CommentProps) {
           <UserTooltip user={comment.user}>
             <Link
               href={`/users/${comment.user.username}`}
-              className="font-medium hover:underline"
+              className="font-medium"
             >
               {comment.user.displayName}
             </Link>

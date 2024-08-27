@@ -14,7 +14,7 @@ interface UserLinkWithTooltipProps extends PropsWithChildren {
 
 export default function UserLinkWithTooltip({
   children,
-  username,
+  username
 }: UserLinkWithTooltipProps) {
   const { data } = useQuery({
     queryKey: ["user-data", username],
@@ -26,7 +26,7 @@ export default function UserLinkWithTooltip({
       }
       return failureCount < 3;
     },
-    staleTime: Infinity,
+    staleTime: Infinity
   });
 
   if (!data) {
