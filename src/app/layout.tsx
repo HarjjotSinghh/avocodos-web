@@ -7,6 +7,8 @@ import { extractRouterConfig } from "uploadthing/server";
 import { fileRouter } from "./api/uploadthing/core";
 import "./globals.css";
 import ReactQueryProvider from "./ReactQueryProvider";
+import { AutoConnectProvider } from "@/providers/AutoConnectProvider";
+import { WalletProvider } from "@/providers/AptosProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -42,9 +44,9 @@ export default function RootLayout({
             disableTransitionOnChange={false}
           >
             {children}
+            <Toaster />
           </ThemeProvider>
         </ReactQueryProvider>
-        <Toaster />
       </body>
     </html>
   );

@@ -22,8 +22,7 @@ export default function UserAvatar({
       draggable={false}
       className={cn(
         "aspect-square h-fit flex-none select-none rounded-full bg-secondary object-cover",
-        className,
-        !avatarUrl && "mix-blend-screen brightness-200 contrast-200 grayscale"
+        className
       )}
     />
   );

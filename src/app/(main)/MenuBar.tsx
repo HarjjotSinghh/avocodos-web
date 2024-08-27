@@ -6,6 +6,7 @@ import { Bookmark, Home } from "lucide-react";
 import Link from "next/link";
 import MessagesButton from "./MessagesButton";
 import NotificationsButton from "./NotificationsButton";
+import { cn } from "@/lib/utils";
 
 interface MenuBarProps {
   className?: string;
@@ -20,14 +21,14 @@ export default async function MenuBar({ className }: MenuBarProps) {
     prisma.notification.count({
       where: {
         recipientId: user.id,
-        read: false,
-      },
+        read: false
+      }
     }),
-    (await streamServerClient.getUnreadCount(user.id)).total_unread_count,
+    (await streamServerClient.getUnreadCount(user.id)).total_unread_count
   ]);
 
   return (
-    <div className={className}>
+    <div className={cn("[&>*]:!px-6", className)}>
       <Button
         variant="ghost"
         className="flex items-center justify-start gap-3"

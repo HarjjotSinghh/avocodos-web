@@ -19,7 +19,6 @@ import { login } from "./actions";
 
 export default function LoginForm() {
   const [error, setError] = useState<string>();
-
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<LoginValues>({
@@ -76,7 +75,7 @@ export default function LoginForm() {
           type="submit"
           className="mt-4 w-full"
         >
-          Log in
+          Login
         </LoadingButton>
       </form>
     </Form>

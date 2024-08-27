@@ -23,6 +23,10 @@ model User {
   passwordHash          String?
   googleId              String?        @unique
   avatarUrl             String?
+  walletAddress         String?        @unique
+  walletName            String?
+  walletLink            String?
+  walletPublicKey       String?
   bio                   String?
   sessions              Session[]
   posts                 Post[]
@@ -33,8 +37,10 @@ model User {
   comments              Comment[]
   receivedNotifications Notification[] @relation("Recipient")
   issuedNotifications   Notification[] @relation("Issuer")
-
-  createdAt DateTime @default(now())
+  coursesCreated        Course[]
+  createdAt             DateTime       @default(now())
+  Enrollment            Enrollment[]
+  Review                Review[]
 
   @@map("users")
 }
@@ -141,6 +147,87 @@ model Notification {
   createdAt DateTime @default(now())
 
   @@map("notifications")
+}
+
+model Course {
+  id              String    @id @default(cuid())
+  title           String
+  description     String
+  price           Int
+  imageUrl        String
+  instructorId    String
+  instructor      User      @relation(fields: [instructorId], references: [id])
+  category        String
+  level           String
+  duration        Int // in minutes
+  enrollmentCount Int       @default(0)
+  rating          Float?
+  isPublished     Boolean   @default(false)
+  startDate       DateTime?
+  endDate         DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  lessons     Lesson[]
+  enrollments Enrollment[]
+  reviews     Review[]
+
+  @@map("courses")
+}
+
+// ... existing code ...
+
+model Lesson {
+  id       String @id @default(cuid())
+  title    String
+  content  String
+  order    Int
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("lessons")
+}
+
+model Enrollment {
+  id       String           @id @default(cuid())
+  userId   String
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress Int              @default(0)
+  status   EnrollmentStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model Review {
+  id       String @id @default(cuid())
+  content  String
+  rating   Int
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId])
+  @@map("reviews")
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DROPPED
 }
 
 enum NotificationType {

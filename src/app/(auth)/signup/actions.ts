@@ -14,8 +14,9 @@ export async function signUp(
   credentials: SignUpValues,
 ): Promise<{ error: string }> {
   try {
-    const { username, email, password } = signUpSchema.parse(credentials);
-
+    const { username, email, password, wallet, account } = signUpSchema.parse(credentials);
+    console.log(wallet, "wallet");
+    console.log(account, "account");
     const passwordHash = await hash(password, {
       memoryCost: 19456,
       timeCost: 2,
@@ -63,6 +64,13 @@ export async function signUp(
           displayName: username,
           email,
           passwordHash,
+          walletAddress: account?.address,
+          walletLink: wallet?.url,
+          walletName: wallet?.name,
+          walletPublicKey:
+            typeof account?.publicKey === "string"
+              ? account?.publicKey
+              : (account?.publicKey as string[]).join(" "),
         },
       });
       await streamServerClient.upsertUser({

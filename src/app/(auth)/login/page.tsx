@@ -11,31 +11,39 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main className="flex h-screen items-center justify-center p-5">
-      <div className="flex h-full max-h-[40rem] w-full max-w-[64rem] overflow-hidden rounded-2xl bg-card">
-        <div className="w-full space-y-10 overflow-y-auto p-10 md:w-1/2">
-          <h1 className="text-left text-3xl font-bold">Login to Avocodos</h1>
+    <main className="flex h-screen w-full items-center justify-center">
+      <div className="flex h-full w-full items-center justify-center overflow-hidden bg-background">
+        <div className="w-full space-y-10 overflow-y-auto md:p-16 p-4 md:max-w-lg">
+          <div>
+            <h1 className="text-left text-3xl font-bold">Login to Avocodos</h1>
+            <p className="mt-2 text-pretty text-left text-muted-foreground">
+              Welcome back! Please enter your details below to continue.
+            </p>
+          </div>
           <div className="space-y-5">
-            <GoogleSignInButton />
-            <div className="flex items-center gap-3">
+            {/* <GoogleSignInButton /> */}
+            {/* <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-muted" />
               <span>OR</span>
               <div className="h-px flex-1 bg-muted" />
-            </div>
+            </div> */}
             <LoginForm />
             <Link href="/signup" className="block text-center hover:underline">
               Don&apos;t have an account? Sign up
             </Link>
           </div>
         </div>
-        <Image
-          src={"/auth.webp"}
-          alt=""
-          width={1280}
-          height={720}
-          draggable={false}
-          className="hidden w-1/2 select-none object-cover md:block"
-        />
+        <div className="relative hidden w-full md:block">
+          <div className="absolute inset-0 z-10 h-full w-full bg-gradient-to-l from-transparent from-60% to-background"></div>
+          <Image
+            src={"/auth.webp"}
+            alt=""
+            width={1280}
+            height={720}
+            draggable={false}
+            className="hidden h-screen w-full flex-1 select-none object-cover md:block"
+          />
+        </div>
       </div>
     </main>
   );

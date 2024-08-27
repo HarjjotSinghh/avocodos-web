@@ -1,16 +1,16 @@
+import React from "react";
+import SessionProvider from "@/app/(main)/SessionProvider";
 import { validateRequest } from "@/auth";
 import { redirect } from "next/navigation";
-import MenuBar from "./MenuBar";
-import Navbar from "./Navbar";
-import SessionProvider from "./SessionProvider";
+import Navbar from "@/app/(main)/Navbar";
+import MenuBar from "@/app/(main)/MenuBar";
 
-export default async function Layout({
+export default async function AddCourseLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
   const session = await validateRequest();
-
   if (!session.user) redirect("/login");
 
   return (
