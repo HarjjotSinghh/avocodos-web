@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SignUpForm from "./SignUpForm";
 import authImage from "@/assets/auth.webp";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 export const metadata: Metadata = {
   title: "Sign Up"
@@ -10,30 +11,48 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main className="flex h-screen items-center justify-center p-5">
-      <div className="avocodos-shadow-lg flex h-full max-h-[40rem] w-full max-w-[64rem] overflow-hidden rounded-2xl bg-card">
-        <div className="w-full space-y-10 overflow-y-auto p-10 md:w-1/2">
-          <div className="space-y-1 text-left">
-            <h1 className="text-3xl font-bold">Sign up to Avocodos</h1>
-            <p className="max-w-[400px] text-pretty text-muted-foreground">
-              A completly web3-based social media and learning platform.
+    <main className="flex h-screen items-center justify-center">
+      <div className="flex h-full w-full items-center justify-center overflow-hidden bg-background">
+        <div className="w-full max-w-lg space-y-10 overflow-y-auto p-4 md:p-16">
+          <div className="flex flex-col items-start justify-start space-y-1 text-left">
+            {/* <Image
+              src={"/logo-text-black.svg"}
+              alt="Avocodos"
+              width={800}
+              height={200}
+              className="!mb-6 block h-10 w-auto dark:hidden"
+            />
+            <Image
+              src={"/logo-text-white.svg"}
+              alt="Avocodos"
+              width={800}
+              height={200}
+              className="!mb-6 hidden h-10 w-auto dark:block"
+            /> */}
+            <h1 className="text-3xl font-bold capitalize">Create an account</h1>
+            <p className="max-w-[400px] text-pretty text-left text-muted-foreground">
+              Welcome to Avocodos, a completly web3-based social media and
+              learning platform.
             </p>
           </div>
-          <div className="space-y-5">
+          <div className="space-y-2">
             <SignUpForm />
-            <Link href="/login" className="block text-center hover:underline">
+            <Link href="/login" className="block text-center">
               Already have an account? Log in
             </Link>
           </div>
         </div>
-        <Image
-          src={"/auth.webp"}
-          alt=""
-          width={1280}
-          height={720}
-          draggable={false}
-          className="hidden w-1/2 select-none object-cover md:block"
-        />
+        <div className="relative hidden w-full md:block">
+          <div className="absolute inset-0 z-10 h-full w-full bg-gradient-to-l from-transparent from-60% to-background"></div>
+          <Image
+            src={"/auth.webp"}
+            alt=""
+            width={1280}
+            height={720}
+            draggable={false}
+            className="hidden h-screen w-full flex-1 select-none object-cover md:block"
+          />
+        </div>
       </div>
     </main>
   );

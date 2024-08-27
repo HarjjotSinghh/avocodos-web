@@ -7,14 +7,13 @@ import { extractRouterConfig } from "uploadthing/server";
 import { fileRouter } from "./api/uploadthing/core";
 import "./globals.css";
 import ReactQueryProvider from "./ReactQueryProvider";
+import { Archivo, Instrument_Sans } from "next/font/google";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans"
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono"
+const instrumentSans = Archivo({
+  subsets: ["latin"],
+  weight: "variable",
+  variable: "--font-instrument-sans",
+  display: "swap"
 });
 
 export const metadata: Metadata = {
@@ -32,7 +31,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body
+        className={`${instrumentSans.className} ${instrumentSans.variable}`}
+      >
         <NextSSRPlugin routerConfig={extractRouterConfig(fileRouter)} />
         <ReactQueryProvider>
           <ThemeProvider
@@ -42,9 +43,9 @@ export default function RootLayout({
             disableTransitionOnChange={false}
           >
             {children}
+            <Toaster />
           </ThemeProvider>
         </ReactQueryProvider>
-        <Toaster />
       </body>
     </html>
   );

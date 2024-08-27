@@ -1,8 +1,10 @@
 import { validateRequest } from "@/auth";
 import { redirect } from "next/navigation";
+import { AutoConnectProvider } from "@/providers/AutoConnectProvider";
+import { WalletProvider } from "@/providers/AptosProvider";
 
 export default async function Layout({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {
@@ -10,5 +12,9 @@ export default async function Layout({
 
   if (user) redirect("/");
 
-  return <>{children}</>;
+  return (
+    <AutoConnectProvider>
+      <WalletProvider>{children}</WalletProvider>
+    </AutoConnectProvider>
+  );
 }

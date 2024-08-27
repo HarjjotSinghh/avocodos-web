@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Course, Prisma } from "@prisma/client";
 
 export function getUserDataSelect(loggedInUserId: string) {
   return {
@@ -130,4 +130,9 @@ export interface NotificationCountInfo {
 
 export interface MessageCountInfo {
   unreadCount: number;
+}
+
+export interface CoursesPage {
+  courses: Course[];
+  nextCursor: string | null;
 }
