@@ -1,7 +1,20 @@
-# Next.js 15 Social Media App
+# Avocodos
+Avocodos is a completely web3-based social media and learning platform.
 
-A full-stack social media app with infinite loading, optimistic updates, authentication, DMs, notifications, file uploads, and much more.
+## Features
+- Create and view courses
+- Get rewareded with NFTs for completing courses
+- Create posts
+- Create comments
+- Create reactions
+- Create communities
+- Follow other users
+- Community moderation features
+- Community flair/badges
 
-Watch the free tutorial on YouTube: https://www.youtube.com/watch?v=TyV12oBDsYI
-
-![thumbnail 7](https://github.com/user-attachments/assets/686b37e4-3d16-4bc4-a7f2-9d152c3addf5)
+## Technologies
+- Next.js
+- TailwindCSS
+- Prisma
+- Aptos
+- Aptos-ts-sdk
