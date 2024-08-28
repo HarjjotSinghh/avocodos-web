@@ -19,7 +19,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-    status,
+    status
   } = useInfiniteQuery({
     queryKey: ["post-feed", "search", query],
     queryFn: ({ pageParam }) =>
@@ -27,13 +27,13 @@ export default function SearchResults({ query }: SearchResultsProps) {
         .get("/api/search", {
           searchParams: {
             q: query,
-            ...(pageParam ? { cursor: pageParam } : {}),
-          },
+            ...(pageParam ? { cursor: pageParam } : {})
+          }
         })
         .json<PostsPage>(),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    gcTime: 0,
+    gcTime: 0
   });
 
   const posts = data?.pages.flatMap((page) => page.posts) || [];
@@ -64,7 +64,12 @@ export default function SearchResults({ query }: SearchResultsProps) {
       onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
     >
       {posts.map((post) => (
-        <Post key={post.id} post={post} />
+        <Post
+          key={post.id}
+          post={post}
+          canModerate={false}
+          posterIsTheCreator={false}
+        />
       ))}
       {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
     </InfiniteScrollContainer>

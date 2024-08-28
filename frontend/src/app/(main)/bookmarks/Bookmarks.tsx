@@ -15,18 +15,18 @@ export default function Bookmarks() {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-    status,
+    status
   } = useInfiniteQuery({
     queryKey: ["post-feed", "bookmarks"],
     queryFn: ({ pageParam }) =>
       kyInstance
         .get(
           "/api/posts/bookmarked",
-          pageParam ? { searchParams: { cursor: pageParam } } : {},
+          pageParam ? { searchParams: { cursor: pageParam } } : {}
         )
         .json<PostsPage>(),
     initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor
   });
 
   const posts = data?.pages.flatMap((page) => page.posts) || [];
@@ -57,7 +57,12 @@ export default function Bookmarks() {
       onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
     >
       {posts.map((post) => (
-        <Post key={post.id} post={post} />
+        <Post
+          key={post.id}
+          post={post}
+          canModerate={false}
+          posterIsTheCreator={false}
+        />
       ))}
       {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
     </InfiniteScrollContainer>

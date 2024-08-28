@@ -19,18 +19,18 @@ export default function UserPosts({ userId }: UserPostsProps) {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-    status,
+    status
   } = useInfiniteQuery({
     queryKey: ["post-feed", "user-posts", userId],
     queryFn: ({ pageParam }) =>
       kyInstance
         .get(
           `/api/users/${userId}/posts`,
-          pageParam ? { searchParams: { cursor: pageParam } } : {},
+          pageParam ? { searchParams: { cursor: pageParam } } : {}
         )
         .json<PostsPage>(),
     initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor
   });
 
   const posts = data?.pages.flatMap((page) => page.posts) || [];
@@ -61,7 +61,12 @@ export default function UserPosts({ userId }: UserPostsProps) {
       onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
     >
       {posts.map((post) => (
-        <Post key={post.id} post={post} />
+        <Post
+          key={post.id}
+          post={post}
+          canModerate={false}
+          posterIsTheCreator={false}
+        />
       ))}
       {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
     </InfiniteScrollContainer>
