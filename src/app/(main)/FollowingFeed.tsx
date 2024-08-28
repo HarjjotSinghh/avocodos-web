@@ -15,18 +15,18 @@ export default function FollowingFeed() {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-    status,
+    status
   } = useInfiniteQuery({
     queryKey: ["post-feed", "following"],
     queryFn: ({ pageParam }) =>
       kyInstance
         .get(
           "/api/posts/following",
-          pageParam ? { searchParams: { cursor: pageParam } } : {},
+          pageParam ? { searchParams: { cursor: pageParam } } : {}
         )
         .json<PostsPage>(),
     initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor
   });
 
   const posts = data?.pages.flatMap((page) => page.posts) || [];
@@ -57,7 +57,7 @@ export default function FollowingFeed() {
       onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
     >
       {posts.map((post) => (
-        <Post key={post.id} post={post} />
+        <Post key={post.id} post={post} canModerate={false} />
       ))}
       {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
     </InfiniteScrollContainer>

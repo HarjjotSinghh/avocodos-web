@@ -2,7 +2,7 @@ import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { getUserDataSelect } from "@/lib/types";
 import { formatNumber } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
+import { ChartNoAxesCombined, Loader2, Rss } from "lucide-react";
 import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -43,7 +43,11 @@ async function WhoToFollow() {
 
   return (
     <div className="space-y-5 rounded-2xl bg-card p-5 shadow-sm">
-      <div className="text-xl font-bold">Who to follow</div>
+      <div className="inline-flex flex-row items-center gap-2 text-xl font-bold capitalize">
+        {" "}
+        <Rss className="size-5" />
+        Who to follow
+      </div>
       {usersToFollow.map((user) => (
         <div key={user.id} className="flex items-center justify-between gap-3">
           <UserTooltip user={user}>
@@ -73,6 +77,11 @@ async function WhoToFollow() {
           />
         </div>
       ))}
+      {usersToFollow.length === 0 && (
+        <div className="text-center text-muted-foreground">
+          No users to follow... I guess you have followed everyone! 🤯
+        </div>
+      )}
     </div>
   );
 }
@@ -103,13 +112,24 @@ async function TrendingTopics() {
 
   return (
     <div className="space-y-5 rounded-2xl bg-card p-5 shadow-sm">
-      <div className="text-xl font-bold">Trending topics</div>
+      <div className="inline-flex flex-row items-center gap-2 text-xl font-bold capitalize">
+        {" "}
+        <ChartNoAxesCombined className="size-5" />
+        Trending topics
+      </div>
       {trendingTopics.map(({ hashtag, count }) => {
         const title = hashtag.split("#")[1];
 
         return (
-          <Link key={title} href={`/hashtag/${title}`} className="block">
-            <p className="line-clamp-1 break-all font-semibold" title={hashtag}>
+          <Link
+            key={title}
+            href={`/hashtag/${title}`}
+            className="group block rounded-lg px-4 py-2 avocodos-transition hover:bg-primary/5"
+          >
+            <p
+              className="line-clamp-1 break-all font-semibold avocodos-transition group-hover:text-primary"
+              title={hashtag}
+            >
               {hashtag}
             </p>
             <p className="text-sm text-muted-foreground">
@@ -118,6 +138,11 @@ async function TrendingTopics() {
           </Link>
         );
       })}
+      {trendingTopics.length === 0 && (
+        <div className="text-center text-muted-foreground">
+          No trending topics... yet! 🤔👀
+        </div>
+      )}
     </div>
   );
 }

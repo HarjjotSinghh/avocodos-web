@@ -5,8 +5,8 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-10 border-b border-muted bg-background/80 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-8 px-4 py-3.5 lg:px-8">
+    <header className="sticky top-0 z-10 border-b border-muted bg-card/90 backdrop-blur">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-8 px-4 py-4 lg:px-8">
         <Link href="/" className="text-2xl font-bold text-primary">
           <Image
             src="/logo-text-black.svg"

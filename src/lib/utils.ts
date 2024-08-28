@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { formatDate, formatDistanceToNowStrict } from "date-fns";
 import { twMerge } from "tailwind-merge";
+import prisma from "@/lib/prisma";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -55,4 +56,27 @@ export function formatDatePretty(date: Date): string {
   };
 
   return `${getDayWithSuffix(day)} ${month} ${year}`;
+}
+
+
+export async function isCommunityModerator(userId: string, communityName: string): Promise<boolean> {
+  const community = await prisma.community.findUnique({
+    where: { name: communityName },
+    include: { moderators: true },
+  });
+
+  return community?.creatorId === userId || community?.moderators.some(mod => mod.id === userId) || false;
+}
+
+export async function isCommunityMember(userId: string, communityName: string): Promise<boolean> {
+  const membership = await prisma.community.findFirst({
+    where: {
+      name: communityName,
+      members: {
+        some: { id: userId },
+      },
+    },
+  });
+
+  return !!membership;
 }

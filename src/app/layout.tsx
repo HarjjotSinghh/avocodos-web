@@ -8,6 +8,7 @@ import { fileRouter } from "./api/uploadthing/core";
 import "./globals.css";
 import ReactQueryProvider from "./ReactQueryProvider";
 import { Archivo, Instrument_Sans } from "next/font/google";
+import StarrySkyBG from "@/components/StarrySkyBG";
 
 const instrumentSans = Archivo({
   subsets: ["latin"],
@@ -42,7 +43,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange={false}
           >
-            {children}
+            {/* <StarrySkyBG /> */}
+            <main className="bg-cross relative">{children}</main>
             <Toaster />
           </ThemeProvider>
         </ReactQueryProvider>

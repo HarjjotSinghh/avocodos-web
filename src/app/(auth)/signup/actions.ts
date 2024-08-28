@@ -15,8 +15,6 @@ export async function signUp(
 ): Promise<{ error: string }> {
   try {
     const { username, email, password, wallet, account } = signUpSchema.parse(credentials);
-    console.log(wallet, "wallet");
-    console.log(account, "account");
     const passwordHash = await hash(password, {
       memoryCost: 19456,
       timeCost: 2,

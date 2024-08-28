@@ -4,7 +4,7 @@ import { useSession } from "@/app/(main)/SessionProvider";
 import { PostData } from "@/lib/types";
 import { cn, formatRelativeDate } from "@/lib/utils";
 import { Media } from "@prisma/client";
-import { MessageSquare } from "lucide-react";
+import { Crown, Edit, MessageSquare, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -15,18 +15,36 @@ import UserTooltip from "../UserTooltip";
 import BookmarkButton from "./BookmarkButton";
 import LikeButton from "./LikeButton";
 import PostMoreButton from "./PostMoreButton";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import kyInstance from "@/lib/ky";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "../ui/use-toast";
+import { Badge } from "../ui/badge";
 
 interface PostProps {
-  post: PostData;
+  post: PostData & { badge?: { name: string; color: string } };
+  canModerate: boolean;
+  posterIsTheCreator: boolean;
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post({
+  post,
+  canModerate,
+  posterIsTheCreator
+}: PostProps) {
   const { user } = useSession();
-
   const [showComments, setShowComments] = useState(false);
-
   return (
-    <Link href={`/posts/${post.id}`}>
+    <>
       <article className="group/post space-y-3 rounded-2xl bg-card p-5 shadow-sm">
         <div className="flex justify-between gap-3">
           <div className="flex flex-wrap gap-3">
@@ -39,9 +57,18 @@ export default function Post({ post }: PostProps) {
               <UserTooltip user={post.user}>
                 <Link
                   href={`/users/${post.user.username}`}
-                  className="block font-medium"
+                  className="inline-flex flex-row flex-wrap items-center gap-2 font-medium"
                 >
                   {post.user.displayName}
+                  {posterIsTheCreator && (
+                    <Badge
+                      variant={"light"}
+                      className="inline-flex items-center gap-1.5 py-1"
+                    >
+                      <Crown className="size-3.5" />
+                      Community Creator
+                    </Badge>
+                  )}
                 </Link>
               </UserTooltip>
               <Link
@@ -54,10 +81,7 @@ export default function Post({ post }: PostProps) {
             </div>
           </div>
           {post.user.id === user.id && (
-            <PostMoreButton
-              post={post}
-              className="opacity-0 transition-opacity group-hover/post:opacity-100"
-            />
+            <PostMoreButton canModerate={canModerate} post={post} />
           )}
         </div>
         <Linkify>
@@ -93,8 +117,11 @@ export default function Post({ post }: PostProps) {
           />
         </div>
         {showComments && <Comments post={post} />}
+        {post.badge && (
+          <span style={{ color: post.badge.color }}>{post.badge.name}</span>
+        )}
       </article>
-    </Link>
+    </>
   );
 }
 

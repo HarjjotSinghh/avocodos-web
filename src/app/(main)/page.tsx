@@ -5,7 +5,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FollowingFeed from "./FollowingFeed";
 import ForYouFeed from "./ForYouFeed";
 import LearningTab from "./LearningTab";
-import { Loader2 } from "lucide-react";
+import {
+  BookOpenText,
+  Loader2,
+  School,
+  Share2,
+  Sparkle,
+  UserCheck2
+} from "lucide-react";
 
 export default function Home() {
   return (
@@ -13,22 +20,34 @@ export default function Home() {
       <div className="w-full min-w-0">
         <Tabs defaultValue="socialize">
           <TabsList className="mb-4 rounded-2xl">
-            <TabsTrigger value="socialize" className="rounded-2xl">
-              Socialize
+            <TabsTrigger
+              value="socialize"
+              className="inline-flex flex-row items-center gap-2 rounded-xl"
+            >
+              <Share2 className="size-4" /> Socialize
             </TabsTrigger>
-            <TabsTrigger value="learning" className="rounded-2xl">
-              Learning
+            <TabsTrigger
+              value="learning"
+              className="inline-flex flex-row items-center gap-2 rounded-xl"
+            >
+              <School className="size-4" /> Learning
             </TabsTrigger>
           </TabsList>
           <TabsContent value="socialize" className="rounded-2xl">
             <Tabs defaultValue="for-you">
               <PostEditor />
               <TabsList className="mb-4 mt-2 rounded-2xl">
-                <TabsTrigger value="for-you" className="rounded-xl">
-                  For you
+                <TabsTrigger
+                  value="for-you"
+                  className="inline-flex flex-row items-center gap-2 rounded-xl"
+                >
+                  <Sparkle className="size-4" /> For you
                 </TabsTrigger>
-                <TabsTrigger value="following" className="rounded-xl">
-                  Following
+                <TabsTrigger
+                  value="following"
+                  className="inline-flex flex-row items-center gap-2 rounded-xl"
+                >
+                  <UserCheck2 className="size-4" /> Following
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="for-you">

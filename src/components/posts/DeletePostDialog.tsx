@@ -7,7 +7,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "../ui/dialog";
 import { useDeletePostMutation } from "./mutations";
 
@@ -20,7 +20,7 @@ interface DeletePostDialogProps {
 export default function DeletePostDialog({
   post,
   open,
-  onClose,
+  onClose
 }: DeletePostDialogProps) {
   const mutation = useDeletePostMutation();
 
@@ -34,7 +34,9 @@ export default function DeletePostDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete post?</DialogTitle>
+          <DialogTitle asChild>
+            <h5>Delete Post?</h5>
+          </DialogTitle>
           <DialogDescription>
             Are you sure you want to delete this post? This action cannot be
             undone.

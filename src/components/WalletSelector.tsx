@@ -134,7 +134,6 @@ function ConnectWalletDialog({
   const { aptosConnectWallets, availableWallets, installableWallets } =
     groupAndSortWallets(wallets, walletSortingOptions);
 
-  console.log(aptosConnectWallets);
   const hasAptosConnectWallets = !!aptosConnectWallets.length;
 
   return (

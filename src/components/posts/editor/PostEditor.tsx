@@ -1,5 +1,4 @@
 "use client";
-
 import { useSession } from "@/app/(main)/SessionProvider";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
@@ -11,15 +10,42 @@ import StarterKit from "@tiptap/starter-kit";
 import { useDropzone } from "@uploadthing/react";
 import { ImageIcon, Loader2, X } from "lucide-react";
 import Image from "next/image";
-import { ClipboardEvent, useRef } from "react";
+import React, { ClipboardEvent, useRef, useState } from "react";
 import { useSubmitPostMutation } from "./mutations";
 import "./styles.css";
 import useMediaUpload, { Attachment } from "./useMediaUpload";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
+import { useQuery } from "@tanstack/react-query";
+import { CommunityBadge } from "@prisma/client";
+import kyInstance from "@/lib/ky";
+import { Label } from "@/components/ui/label";
 
-export default function PostEditor() {
+interface PostEditorProps {
+  communityName: string;
+  placeholderText?: string;
+}
+
+export default function PostEditor({
+  communityName,
+  placeholderText
+}: PostEditorProps): React.ReactNode {
   const { user } = useSession();
 
   const mutation = useSubmitPostMutation();
+
+  // Add this type definition
+  type SubmitPostInput = {
+    content: string;
+    mediaIds: string[];
+    communityName: string;
+    badgeId: string | null;
+  };
 
   const {
     startUpload,
@@ -43,7 +69,7 @@ export default function PostEditor() {
         italic: false
       }),
       Placeholder.configure({
-        placeholder: "What's going on?"
+        placeholder: placeholderText ?? "What's on your mind?"
       })
     ]
   });
@@ -53,16 +79,40 @@ export default function PostEditor() {
       blockSeparator: "\n"
     }) || "";
 
+  const [selectedBadge, setSelectedBadge] = useState<string | null>(null);
+
+  const { data: badges } = useQuery({
+    queryKey: ["community-badges", communityName],
+    queryFn: () =>
+      kyInstance
+        .get(`/api/communities/${communityName}/badges`)
+        .json<CommunityBadge[]>()
+  });
+
   function onSubmit() {
+    if (!input.trim() || isUploading) {
+      return;
+    }
+
     mutation.mutate(
       {
         content: input,
-        mediaIds: attachments.map((a) => a.mediaId).filter(Boolean) as string[]
+        mediaIds: attachments.map((a) => a.mediaId).filter(Boolean) as string[],
+        communityName,
+        badgeId: selectedBadge
       },
       {
         onSuccess: () => {
-          editor?.commands.clearContent();
+          // Reset the editor
+          editor?.commands.setContent("");
+          // Reset attachments
           resetMediaUploads();
+          // Reset selected badge
+          setSelectedBadge(null);
+        },
+        onError: (error) => {
+          console.error("Failed to submit post:", error);
+          // You might want to show an error toast here
         }
       }
     );
@@ -112,11 +162,30 @@ export default function PostEditor() {
           onClick={onSubmit}
           loading={mutation.isPending}
           disabled={!input.trim() || isUploading}
-          className="min-w-20"
+          className="px-4"
+          size={"sm"}
         >
           Post
         </LoadingButton>
       </div>
+      {badges && badges.length > 0 && (
+        <Select
+          value={selectedBadge || ""}
+          onValueChange={(value: string) => setSelectedBadge(value)}
+        >
+          <Label>Select a badge</Label>
+          <SelectTrigger className="max-w-sm">
+            <SelectValue placeholder="Select a badge" />
+          </SelectTrigger>
+          <SelectContent className="max-w-sm">
+            {badges.map((badge) => (
+              <SelectItem key={badge.id} value={badge.id}>
+                <span style={{ color: badge.color }}>{badge.name}</span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
     </div>
   );
 }

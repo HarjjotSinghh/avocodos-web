@@ -27,11 +27,8 @@ interface UserButtonProps {
 
 export default function UserButton({ className }: UserButtonProps) {
   const { user } = useSession();
-
   const { theme, setTheme } = useTheme();
-
   const queryClient = useQueryClient();
-  console.log(user.avatarUrl);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

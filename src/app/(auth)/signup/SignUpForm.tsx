@@ -57,7 +57,6 @@ export default function SignUpForm() {
   async function onSubmit(values: SignUpValues) {
     setError(undefined);
     startTransition(async () => {
-      console.log(values);
       if (!account?.address) {
         setError("No wallet connected. Please connect a wallet.");
         return;

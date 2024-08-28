@@ -60,7 +60,9 @@ export function useSubmitPostMutation() {
       });
 
       toast({
-        description: "Post created",
+        variant: "default",
+        title: "Post created successfully",
+        description: "Your post has been created and is now visible to others.",
       });
     },
     onError(error) {

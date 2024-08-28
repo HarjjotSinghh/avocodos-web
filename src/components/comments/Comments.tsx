@@ -18,15 +18,15 @@ export default function Comments({ post }: CommentsProps) {
         kyInstance
           .get(
             `/api/posts/${post.id}/comments`,
-            pageParam ? { searchParams: { cursor: pageParam } } : {},
+            pageParam ? { searchParams: { cursor: pageParam } } : {}
           )
           .json<CommentsPage>(),
       initialPageParam: null as string | null,
       getNextPageParam: (firstPage) => firstPage.previousCursor,
       select: (data) => ({
         pages: [...data.pages].reverse(),
-        pageParams: [...data.pageParams].reverse(),
-      }),
+        pageParams: [...data.pageParams].reverse()
+      })
     });
 
   const comments = data?.pages.flatMap((page) => page.comments) || [];
@@ -46,10 +46,12 @@ export default function Comments({ post }: CommentsProps) {
       )}
       {status === "pending" && <Loader2 className="mx-auto animate-spin" />}
       {status === "success" && !comments.length && (
-        <p className="text-center text-muted-foreground">No comments yet.</p>
+        <p className="!mt-7 text-center text-muted-foreground">
+          No comments yet.
+        </p>
       )}
       {status === "error" && (
-        <p className="text-center text-destructive">
+        <p className="!mt-7 text-center text-destructive">
           An error occurred while loading comments.
         </p>
       )}

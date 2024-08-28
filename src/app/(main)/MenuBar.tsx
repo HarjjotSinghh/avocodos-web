@@ -2,7 +2,7 @@ import { validateRequest } from "@/auth";
 import { Button } from "@/components/ui/button";
 import prisma from "@/lib/prisma";
 import streamServerClient from "@/lib/stream";
-import { Bookmark, Home } from "lucide-react";
+import { Bookmark, Home, Users } from "lucide-react";
 import Link from "next/link";
 import MessagesButton from "./MessagesButton";
 import NotificationsButton from "./NotificationsButton";
@@ -32,7 +32,7 @@ export default async function MenuBar({ className }: MenuBarProps) {
     <div className={cn("[&>*]:!px-2 lg:[&>*]:!px-4", className)}>
       <Button
         variant="ghost"
-        className="flex items-center justify-start gap-3"
+        className={cn("flex items-center justify-start gap-3")}
         title="Home"
         asChild
       >
@@ -41,13 +41,24 @@ export default async function MenuBar({ className }: MenuBarProps) {
           <span className="hidden lg:inline">Home</span>
         </Link>
       </Button>
+      <Button
+        variant="ghost"
+        className={cn("flex items-center justify-start gap-3")}
+        title="Communities"
+        asChild
+      >
+        <Link href="/communities">
+          <Users />
+          <span className="hidden lg:inline">Communities</span>
+        </Link>
+      </Button>
       <NotificationsButton
         initialState={{ unreadCount: unreadNotificationsCount }}
       />
       <MessagesButton initialState={{ unreadCount: unreadMessagesCount }} />
       <Button
         variant="ghost"
-        className="flex items-center justify-start gap-3"
+        className={cn("flex items-center justify-start gap-3")}
         title="Bookmarks"
         asChild
       >
@@ -59,7 +70,7 @@ export default async function MenuBar({ className }: MenuBarProps) {
       {/* Profile button */}
       <Button
         variant="ghost"
-        className="flex items-center justify-start gap-3"
+        className={cn("flex items-center justify-start gap-3")}
         title="Profile"
         asChild
       >
