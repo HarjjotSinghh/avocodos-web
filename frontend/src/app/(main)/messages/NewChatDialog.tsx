@@ -15,6 +15,7 @@ import { useState } from "react";
 import { UserResponse } from "stream-chat";
 import { DefaultStreamChatGenerics, useChatContext } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
+import Spinner from "@/components/Spinner";
 
 interface NewChatDialogProps {
   onOpenChange: (open: boolean) => void;
