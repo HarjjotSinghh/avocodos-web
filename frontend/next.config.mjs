@@ -1,3 +1,9 @@
+import { setupDevPlatform } from '@cloudflare/next-on-pages/next-dev';
+
+if (process.env.NODE_ENV === 'development') {
+   await setupDevPlatform();
+ }
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -5,6 +11,7 @@ const nextConfig = {
       dynamic: 30,
     },
   },
+  swcMinify: false,
   serverExternalPackages: ["@node-rs/argon2"],
   images: {
     remotePatterns: [
@@ -22,6 +29,12 @@ const nextConfig = {
         destination: "/search?q=%23:tag",
       },
     ];
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals.push('@node-rs/argon2');
+    }
+    return config;
   },
 };
 
