@@ -1,6 +1,9 @@
 "use client";
 
-import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
+import {
+  AptosWalletAdapterProvider,
+  Wallet
+} from "@aptos-labs/wallet-adapter-react";
 import { BitgetWallet } from "@bitget-wallet/aptos-wallet-adapter";
 import { MartianWallet } from "@martianwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "@msafe/aptos-wallet-adapter";
@@ -19,7 +22,7 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
   const { autoConnect } = useAutoConnect();
   const { toast } = useToast();
 
-  const wallets = [
+  const wallets: readonly Wallet[] = [
     new PetraWallet(),
     new WelldoneWallet(),
     new BitgetWallet(),
