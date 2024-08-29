@@ -160,7 +160,7 @@ function ConnectWalletDialog({
                 onConnect={close}
               />
             ))}
-            <p className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
+            <p className="flex items-center justify-center gap-1 text-sm text-foreground/80">
               Learn more about{" "}
               <AboutAptosConnect.Trigger className="flex items-center gap-1 py-3 text-foreground">
                 Aptos Connect <ArrowRight size={16} />
@@ -169,12 +169,12 @@ function ConnectWalletDialog({
             <AptosPrivacyPolicy className="flex flex-col items-center py-1">
               <p className="text-xs leading-5">
                 <AptosPrivacyPolicy.Disclaimer />{" "}
-                <AptosPrivacyPolicy.Link className="text-muted-foreground underline underline-offset-4" />
-                <span className="text-muted-foreground">.</span>
+                <AptosPrivacyPolicy.Link className="text-foreground/80 underline underline-offset-4" />
+                <span className="text-foreground/80">.</span>
               </p>
-              <AptosPrivacyPolicy.PoweredBy className="flex items-center gap-1.5 text-xs leading-5 text-muted-foreground" />
+              <AptosPrivacyPolicy.PoweredBy className="flex items-center gap-1.5 text-xs leading-5 text-foreground/80" />
             </AptosPrivacyPolicy>
-            <div className="flex items-center gap-3 pt-4 text-muted-foreground">
+            <div className="flex items-center gap-3 pt-4 text-foreground/80">
               <div className="h-px w-full bg-secondary" />
               Or
               <div className="h-px w-full bg-secondary" />
@@ -283,7 +283,7 @@ function renderEducationScreen(screen: AboutAptosConnectEducationScreen) {
       </div>
       <div className="flex flex-col gap-2 pb-4 text-center">
         <screen.Title className="text-xl" />
-        <screen.Description className="text-sm text-muted-foreground [&>a]:text-foreground [&>a]:underline [&>a]:underline-offset-4" />
+        <screen.Description className="text-sm text-foreground/80 [&>a]:text-foreground [&>a]:underline [&>a]:underline-offset-4" />
       </div>
 
       <div className="grid grid-cols-3 items-center">

@@ -8,7 +8,8 @@ import CommunityRoles from "@/components/CommunityRoles";
 import CommunityBadges from "@/components/CommunityBadges";
 import { Community, Post as PrismaPost, User } from "@prisma/client";
 import Post from "@/components/posts/Post";
-import { useState } from "react";
+import { CommunityBadge, CommunityRole } from "@prisma/client";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,24 +17,33 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { Cog, LogIn, LogOut, Wrench } from "lucide-react";
+import { Clock, Cog, Loader2, LogIn, LogOut, Wrench } from "lucide-react";
 import CommunityPageSkeleton from "@/components/skeletons/CommunityPageSkeleton";
+import prisma from "@/lib/prisma";
+import { formatDate } from "date-fns";
+import { useTheme } from "next-themes";
+import { toast } from "@/components/ui/use-toast";
 
 interface ExtendedPost extends PrismaPost {
-  user: {
-    id: string;
-    createdAt: Date;
-    username: string;
-    displayName: string;
-    avatarUrl: string | null;
-    bio: string | null;
+  user: User & {
     followers: { followerId: string }[];
     _count: { posts: number; followers: number };
+    communityRoles: CommunityRole[];
+    joinedCommunities: any[]; // Add this
+    moderatedCommunities: any[]; // Add this
+    assignedRoles: any[]; // Add this
+    assets: any[]; // Add this
   };
   likes: any[];
   bookmarks: any[];
   _count: { likes: number; comments: number };
   attachments: any[];
+  badge: CommunityBadge | null;
+  communityRoles: CommunityRole[];
+  community: { name: string; description: string | null } | null;
+  comments: any[]; // Add this line
+  communityBadge: CommunityBadge | null;
+  CommunityBadge: CommunityBadge | null; // Add this line
 }
 
 interface ExtendedCommunity extends Community {
@@ -79,6 +89,51 @@ export default function CommunityPage({
       kyInstance.delete(`/api/communities/${communityName}/join`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["community", communityName] });
+      toast({
+        title: "Success",
+        description: "You have left the community."
+      });
+    },
+    onError: (error: any) => {
+      if (error.response) {
+        switch (error.response.status) {
+          case 401:
+            toast({
+              title: "Error",
+              description: "You are not authorized to leave this community.",
+              variant: "destructive"
+            });
+            break;
+          case 403:
+            toast({
+              title: "Error",
+              description:
+                "You cannot leave this community as you are the creator.",
+              variant: "destructive"
+            });
+            break;
+          case 404:
+            toast({
+              title: "Error",
+              description: "Community not found.",
+              variant: "destructive"
+            });
+            break;
+          default:
+            toast({
+              title: "Error",
+              description:
+                "An unexpected error occurred. Please try again later.",
+              variant: "destructive"
+            });
+        }
+      } else {
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred. Please try again later.",
+          variant: "destructive"
+        });
+      }
     }
   });
 
@@ -86,7 +141,7 @@ export default function CommunityPage({
 
   if (!community)
     return (
-      <p className="text-left text-sm text-muted-foreground">
+      <p className="text-left text-sm text-foreground/80">
         Community not found
       </p>
     );
@@ -96,7 +151,6 @@ export default function CommunityPage({
   const isModerator =
     community.moderators?.some((mod) => mod.id === user.id) ?? false;
   const isCreator = community.creatorId === user.id;
-
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
       <div className="mb-4 flex flex-col items-start justify-between gap-4 md:flex-row">
@@ -111,12 +165,31 @@ export default function CommunityPage({
             <Button
               className="min-w-fit"
               onClick={() => leaveMutation.mutate()}
+              disabled={leaveMutation.isPending}
             >
-              <LogOut className="-mt-0.5 mr-2 size-4" /> Leave Community
+              {leaveMutation.isPending ? (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              ) : (
+                <LogOut className="-mt-0.5 mr-2 size-4" />
+              )}{" "}
+              {leaveMutation.isPending
+                ? "Leaving Community..."
+                : "Leave Community"}
             </Button>
           ) : (
-            <Button className="min-w-fit" onClick={() => joinMutation.mutate()}>
-              <LogIn className="-mt-0.5 mr-2 size-4" /> Join Community
+            <Button
+              disabled={joinMutation.isPending}
+              className="min-w-fit"
+              onClick={() => joinMutation.mutate()}
+            >
+              {joinMutation.isPending ? (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              ) : (
+                <LogIn className="-mt-0.5 mr-2 size-4" />
+              )}{" "}
+              {joinMutation.isPending
+                ? "Joining Community..."
+                : "Join Community"}
             </Button>
           )}
           {(isModerator || isCreator) && (
@@ -154,17 +227,29 @@ export default function CommunityPage({
       <div className="flex flex-col gap-8">
         {posts?.posts ? (
           posts.posts.length > 0 &&
-          posts.posts?.map((post) => (
-            <Post
-              key={post.id}
-              post={post}
-              canModerate={isModerator || isCreator}
-              posterIsTheCreator={post.user.id === community.creatorId}
-            />
-          ))
+          posts.posts?.map((post) => {
+            return (
+              <React.Fragment key={post.id}>
+                <Post
+                  post={post}
+                  canModerate={isModerator || isCreator}
+                  posterIsTheCreator={post.user.id === community.creatorId}
+                  communityBadge={post.badge}
+                />
+              </React.Fragment>
+            );
+          })
         ) : (
-          <p className="text-sm text-muted-foreground">No posts found</p>
+          <p className="text-sm text-foreground/80">No posts found</p>
         )}
+      </div>
+      {/* Community was created on */}
+      <div className="mt-4 inline-flex w-full items-center justify-center gap-2 text-sm text-foreground/80">
+        <Clock className="size-3.5" />{" "}
+        <span>
+          This community was created on{" "}
+          {formatDate(community.createdAt, "MMMM do, yyyy")}
+        </span>
       </div>
     </div>
   );

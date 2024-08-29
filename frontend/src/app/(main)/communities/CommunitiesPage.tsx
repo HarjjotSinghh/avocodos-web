@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Loader2, PlusCircle } from "lucide-react";
 import CommunitiesPageSkeleton from "@/components/skeletons/CommunitiesPageSkeleton";
+import Spinner from "@/components/Spinner";
 
 export default function CommunitiesPage() {
   return (
@@ -21,7 +22,7 @@ export default function CommunitiesPage() {
             </Button>
           </Link>
         </div>
-        <Suspense fallback={<Loader2 className="mx-auto animate-spin" />}>
+        <Suspense fallback={<Spinner />}>
           <CommunityList />
         </Suspense>
       </main>

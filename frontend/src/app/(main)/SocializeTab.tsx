@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FollowingFeed from "./FollowingFeed";
 import ForYouFeed from "./ForYouFeed";
 import kyInstance from "@/lib/ky";
-import { Loader2 } from "lucide-react";
+import Spinner from "@/components/Spinner";
 import { Course } from "@prisma/client";
 
 export default function SocializeTab() {
@@ -19,7 +19,7 @@ export default function SocializeTab() {
   });
 
   if (isLoading) {
-    return <Loader2 className="mx-auto my-3 animate-spin" />;
+    return <Spinner />;
   }
 
   return (

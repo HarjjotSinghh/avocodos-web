@@ -9,6 +9,7 @@ import "./globals.css";
 import ReactQueryProvider from "./ReactQueryProvider";
 import { Archivo, Instrument_Sans } from "next/font/google";
 import StarrySkyBG from "@/components/StarrySkyBG";
+import Spinner from "@/components/Spinner";
 
 const instrumentSans = Archivo({
   subsets: ["latin"],
@@ -44,7 +45,7 @@ export default function RootLayout({
             disableTransitionOnChange={false}
           >
             {/* <StarrySkyBG /> */}
-            <main className="bg-cross relative">{children}</main>
+            <main className="relative bg-cross">{children}</main>
             <Toaster />
           </ThemeProvider>
         </ReactQueryProvider>

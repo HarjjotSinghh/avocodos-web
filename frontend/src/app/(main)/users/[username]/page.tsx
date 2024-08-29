@@ -102,7 +102,7 @@ async function UserProfile({ user, loggedInUserId }: UserProfileProps) {
         <div className="me-auto space-y-3">
           <div>
             <h5 className="text-3xl font-bold">{user.displayName}</h5>
-            <div className="text-muted-foreground">@{user.username}</div>
+            <div className="text-foreground/80">@{user.username}</div>
           </div>
           <div>Member since {formatDate(user.createdAt, "MMM d, yyyy")}</div>
           <div className="grid grid-cols-2 gap-3">

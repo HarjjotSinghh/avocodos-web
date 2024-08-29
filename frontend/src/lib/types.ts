@@ -22,6 +22,13 @@ export function getUserDataSelect(loggedInUserId: string) {
         followers: true,
       },
     },
+    communityRoles: true,
+    assets: true,
+    assignedRoles: true,
+    joinedCommunities: true,
+    moderatedCommunities: true,
+    walletAddress: true,
+    email: true,
   } satisfies Prisma.UserSelect;
 }
 
@@ -55,6 +62,24 @@ export function getPostDataInclude(loggedInUserId: string) {
       select: {
         likes: true,
         comments: true,
+      },
+    },
+    badge: true,
+    community: {
+      select: {
+        name: true,
+        description: true,
+      },
+    },
+    CommunityBadge: true,
+    comments: {
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        user: {
+          select: getUserDataSelect(loggedInUserId),
+        }
       },
     },
   } satisfies Prisma.PostInclude;

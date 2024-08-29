@@ -32,7 +32,7 @@ export default function Comment({ comment }: CommentProps) {
               {comment.user.displayName}
             </Link>
           </UserTooltip>
-          <span className="text-muted-foreground">
+          <span className="text-foreground/80">
             {formatRelativeDate(comment.createdAt)}
           </span>
         </div>

@@ -6,7 +6,7 @@ import UserAvatar from "@/components/UserAvatar";
 import UserTooltip from "@/components/UserTooltip";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude, UserData } from "@/lib/types";
-import { Loader2 } from "lucide-react";
+import Spinner from "@/components/Spinner";
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -66,7 +66,7 @@ export default async function Page({ params: { postId } }: PageProps) {
         />
       </div>
       <div className="sticky top-[5.4em] hidden h-fit w-80 flex-none lg:block">
-        <Suspense fallback={<Loader2 className="mx-auto animate-spin" />}>
+        <Suspense fallback={<Spinner />}>
           <UserInfoSidebar user={post.user} />
         </Suspense>
       </div>
@@ -96,14 +96,14 @@ async function UserInfoSidebar({ user }: UserInfoSidebarProps) {
             <p className="line-clamp-1 break-all font-semibold">
               {user.displayName}
             </p>
-            <p className="line-clamp-1 break-all text-muted-foreground">
+            <p className="line-clamp-1 break-all text-foreground/80">
               @{user.username}
             </p>
           </div>
         </Link>
       </UserTooltip>
       <Linkify>
-        <div className="line-clamp-6 whitespace-pre-line break-words text-muted-foreground">
+        <div className="line-clamp-6 whitespace-pre-line break-words text-foreground/80">
           {user.bio}
         </div>
       </Linkify>

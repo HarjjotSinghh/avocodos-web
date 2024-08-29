@@ -5,7 +5,7 @@ import {
   QueryKey,
   useMutation,
   useQuery,
-  useQueryClient,
+  useQueryClient
 } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
 import { useToast } from "../ui/use-toast";
@@ -27,7 +27,7 @@ export default function LikeButton({ postId, initialState }: LikeButtonProps) {
     queryFn: () =>
       kyInstance.get(`/api/posts/${postId}/likes`).json<LikeInfo>(),
     initialData: initialState,
-    staleTime: Infinity,
+    staleTime: Infinity
   });
 
   const { mutate } = useMutation({
@@ -43,7 +43,7 @@ export default function LikeButton({ postId, initialState }: LikeButtonProps) {
       queryClient.setQueryData<LikeInfo>(queryKey, () => ({
         likes:
           (previousState?.likes || 0) + (previousState?.isLikedByUser ? -1 : 1),
-        isLikedByUser: !previousState?.isLikedByUser,
+        isLikedByUser: !previousState?.isLikedByUser
       }));
 
       return { previousState };
@@ -53,9 +53,9 @@ export default function LikeButton({ postId, initialState }: LikeButtonProps) {
       console.error(error);
       toast({
         variant: "destructive",
-        description: "Something went wrong. Please try again.",
+        description: "Something went wrong. Please try again."
       });
-    },
+    }
   });
 
   return (
@@ -63,7 +63,7 @@ export default function LikeButton({ postId, initialState }: LikeButtonProps) {
       <Heart
         className={cn(
           "size-5",
-          data.isLikedByUser && "fill-red-500 text-red-500",
+          data.isLikedByUser && "fill-red-500 text-red-500"
         )}
       />
       <span className="text-sm font-medium tabular-nums">

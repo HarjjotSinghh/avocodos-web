@@ -6,7 +6,7 @@ import PostsLoadingSkeleton from "@/components/posts/PostsLoadingSkeleton";
 import kyInstance from "@/lib/ky";
 import { PostsPage } from "@/lib/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import Spinner from "@/components/Spinner";
 
 interface UserPostsProps {
   userId: string;
@@ -41,7 +41,7 @@ export default function UserPosts({ userId }: UserPostsProps) {
 
   if (status === "success" && !posts.length && !hasNextPage) {
     return (
-      <p className="text-center text-muted-foreground">
+      <p className="text-center text-foreground/80">
         This user hasn&apos;t posted anything yet.
       </p>
     );
@@ -64,11 +64,11 @@ export default function UserPosts({ userId }: UserPostsProps) {
         <Post
           key={post.id}
           post={post}
-          canModerate={false}
+          canModerate={post.id === userId}
           posterIsTheCreator={false}
         />
       ))}
-      {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
+      {isFetchingNextPage && <Spinner />}
     </InfiniteScrollContainer>
   );
 }

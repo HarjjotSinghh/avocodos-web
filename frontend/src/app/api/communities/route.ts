@@ -31,7 +31,11 @@ export async function GET(
                     },
                     _count: {
                         select: { members: true, posts: true }
-                    }
+                    },
+                    badges: true,
+                    moderators: true,
+                    roles: true,
+                    creator: true,
                 }
             });
 

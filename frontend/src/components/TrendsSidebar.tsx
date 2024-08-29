@@ -9,11 +9,12 @@ import { Suspense } from "react";
 import FollowButton from "./FollowButton";
 import UserAvatar from "./UserAvatar";
 import UserTooltip from "./UserTooltip";
+import Spinner from "./Spinner";
 
 export default function TrendsSidebar() {
   return (
-    <div className="sticky top-[5.4em] hidden h-fit w-72 flex-none space-y-5 md:block lg:w-80">
-      <Suspense fallback={<Loader2 className="mx-auto animate-spin" />}>
+    <div className="sticky top-[6.5em] hidden h-fit w-72 flex-none space-y-5 md:block lg:w-80">
+      <Suspense fallback={<Spinner />}>
         <WhoToFollow />
         <TrendingTopics />
       </Suspense>
@@ -60,7 +61,7 @@ async function WhoToFollow() {
                 <p className="line-clamp-1 break-all font-semibold">
                   {user.displayName}
                 </p>
-                <p className="line-clamp-1 break-all text-muted-foreground">
+                <p className="line-clamp-1 break-all text-foreground/80">
                   @{user.username}
                 </p>
               </div>
@@ -78,8 +79,9 @@ async function WhoToFollow() {
         </div>
       ))}
       {usersToFollow.length === 0 && (
-        <div className="text-center text-muted-foreground">
-          No users to follow... I guess you have followed everyone! 🤯
+        <div className="text-center text-foreground/80">
+          No users to follow... I guess you have followed single user who has
+          ever signed up on Avocodos! 🤯
         </div>
       )}
     </div>
@@ -132,14 +134,14 @@ async function TrendingTopics() {
             >
               {hashtag}
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground/80">
               {formatNumber(count)} {count === 1 ? "post" : "posts"}
             </p>
           </Link>
         );
       })}
       {trendingTopics.length === 0 && (
-        <div className="text-center text-muted-foreground">
+        <div className="text-center text-foreground/80">
           No trending topics... yet! 🤔👀
         </div>
       )}

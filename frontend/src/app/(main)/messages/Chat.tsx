@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import Spinner from "@/components/Spinner";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { Chat as StreamChat } from "stream-chat-react";
@@ -16,7 +16,7 @@ export default function Chat() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!chatClient) {
-    return <Loader2 className="mx-auto my-3 animate-spin" />;
+    return <Spinner />;
   }
 
   return (

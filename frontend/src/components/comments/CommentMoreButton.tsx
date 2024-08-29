@@ -6,7 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "../ui/dropdown-menu";
 import DeleteCommentDialog from "./DeleteCommentDialog";
 
@@ -17,7 +17,7 @@ interface CommentMoreButtonProps {
 
 export default function CommentMoreButton({
   comment,
-  className,
+  className
 }: CommentMoreButtonProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -26,7 +26,7 @@ export default function CommentMoreButton({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button size="icon" variant="ghost" className={className}>
-            <MoreHorizontal className="size-5 text-muted-foreground" />
+            <MoreHorizontal className="size-5 text-foreground/80" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

@@ -7,9 +7,9 @@ import { NotificationsPage } from "@/lib/types";
 import {
   useInfiniteQuery,
   useMutation,
-  useQueryClient,
+  useQueryClient
 } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import Spinner from "@/components/Spinner";
 import { useEffect } from "react";
 import Notification from "./Notification";
 
@@ -20,18 +20,18 @@ export default function Notifications() {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-    status,
+    status
   } = useInfiniteQuery({
     queryKey: ["notifications"],
     queryFn: ({ pageParam }) =>
       kyInstance
         .get(
           "/api/notifications",
-          pageParam ? { searchParams: { cursor: pageParam } } : {},
+          pageParam ? { searchParams: { cursor: pageParam } } : {}
         )
         .json<NotificationsPage>(),
     initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor
   });
 
   const queryClient = useQueryClient();
@@ -40,12 +40,12 @@ export default function Notifications() {
     mutationFn: () => kyInstance.patch("/api/notifications/mark-as-read"),
     onSuccess: () => {
       queryClient.setQueryData(["unread-notification-count"], {
-        unreadCount: 0,
+        unreadCount: 0
       });
     },
     onError(error) {
       console.error("Failed to mark notifications as read", error);
-    },
+    }
   });
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function Notifications() {
 
   if (status === "success" && !notifications.length && !hasNextPage) {
     return (
-      <p className="text-center text-muted-foreground">
+      <p className="text-center text-foreground/80">
         You don&apos;t have any notifications yet.
       </p>
     );
@@ -82,7 +82,7 @@ export default function Notifications() {
       {notifications.map((notification) => (
         <Notification key={notification.id} notification={notification} />
       ))}
-      {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
+      {isFetchingNextPage && <Spinner />}
     </InfiniteScrollContainer>
   );
 }

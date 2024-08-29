@@ -13,6 +13,7 @@ import {
   Sparkle,
   UserCheck2
 } from "lucide-react";
+import Spinner from "@/components/Spinner";
 
 export default function Home() {
   return (
@@ -59,9 +60,7 @@ export default function Home() {
             </Tabs>
           </TabsContent>
           <TabsContent value="learning">
-            <Suspense
-              fallback={<Loader2 className="mx-auto my-3 animate-spin" />}
-            >
+            <Suspense fallback={<Spinner />}>
               <LearningTab />
             </Suspense>
           </TabsContent>

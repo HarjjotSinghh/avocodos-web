@@ -5,10 +5,11 @@ import {
   QueryKey,
   useMutation,
   useQuery,
-  useQueryClient,
+  useQueryClient
 } from "@tanstack/react-query";
 import { Bookmark } from "lucide-react";
 import { useToast } from "../ui/use-toast";
+import { Button } from "../ui/button";
 
 interface BookmarkButtonProps {
   postId: string;
@@ -17,7 +18,7 @@ interface BookmarkButtonProps {
 
 export default function BookmarkButton({
   postId,
-  initialState,
+  initialState
 }: BookmarkButtonProps) {
   const { toast } = useToast();
 
@@ -30,7 +31,7 @@ export default function BookmarkButton({
     queryFn: () =>
       kyInstance.get(`/api/posts/${postId}/bookmark`).json<BookmarkInfo>(),
     initialData: initialState,
-    staleTime: Infinity,
+    staleTime: Infinity
   });
 
   const { mutate } = useMutation({
@@ -40,7 +41,7 @@ export default function BookmarkButton({
         : kyInstance.post(`/api/posts/${postId}/bookmark`),
     onMutate: async () => {
       toast({
-        description: `Post ${data.isBookmarkedByUser ? "un" : ""}bookmarked`,
+        description: `Post ${data.isBookmarkedByUser ? "un" : ""}bookmarked`
       });
 
       await queryClient.cancelQueries({ queryKey });
@@ -48,7 +49,7 @@ export default function BookmarkButton({
       const previousState = queryClient.getQueryData<BookmarkInfo>(queryKey);
 
       queryClient.setQueryData<BookmarkInfo>(queryKey, () => ({
-        isBookmarkedByUser: !previousState?.isBookmarkedByUser,
+        isBookmarkedByUser: !previousState?.isBookmarkedByUser
       }));
 
       return { previousState };
@@ -58,19 +59,19 @@ export default function BookmarkButton({
       console.error(error);
       toast({
         variant: "destructive",
-        description: "Something went wrong. Please try again.",
+        description: "Something went wrong. Please try again."
       });
-    },
+    }
   });
 
   return (
-    <button onClick={() => mutate()} className="flex items-center gap-2">
+    <Button variant="ghost" size="icon" onClick={() => mutate()}>
       <Bookmark
         className={cn(
           "size-5",
-          data.isBookmarkedByUser && "fill-primary text-primary",
+          data.isBookmarkedByUser && "fill-primary text-primary"
         )}
       />
-    </button>
+    </Button>
   );
 }

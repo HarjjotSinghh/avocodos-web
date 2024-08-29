@@ -135,7 +135,7 @@ async function mintNFT(recipientAddress: string, courseTitle: string, displayNam
     // Transfer NFT to recipient
     const transferTransaction = await aptos.transferDigitalAssetTransaction({
         sender: avocodosAccount,
-        digitalAssetAddress: mintedNFT.token_data_id,
+        digitalAssetAddress: mintedNFT.token_data_id ?? "",
         recipient: recipientAddress as unknown as AccountAddress
     });
 
@@ -148,7 +148,7 @@ async function mintNFT(recipientAddress: string, courseTitle: string, displayNam
         url: tokenURI,
         name: tokenName,
         txnHash: transferTxn?.hash ?? "",
-        tokenId: mintedNFT.token_data_id,
+        tokenId: mintedNFT.token_data_id ?? "",
         chain: APTOS_NETWORK,
         collection: collectionName,
         metadata: JSON.stringify(mintedNFT),

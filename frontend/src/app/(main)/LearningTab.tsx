@@ -5,7 +5,7 @@ import { Courses } from "@/components/Courses";
 import CoursesLoadingSkeleton from "@/components/skeletons/CoursesLoadingSkeleton";
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
 import kyInstance from "@/lib/ky";
-import { Loader2 } from "lucide-react";
+import Spinner from "@/components/Spinner";
 import { Course } from "@prisma/client";
 
 interface CoursesPage {
@@ -43,7 +43,7 @@ export default function LearningTab() {
 
   if (status === "success" && !courses.length && !hasNextPage) {
     return (
-      <p className="text-center text-muted-foreground">
+      <p className="text-center text-foreground/80">
         No courses available at the moment.
       </p>
     );
@@ -63,7 +63,7 @@ export default function LearningTab() {
       onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
     >
       <Courses courses={courses} loading={isLoading} />
-      {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
+      {isFetchingNextPage && <Spinner />}
     </InfiniteScrollContainer>
   );
 }

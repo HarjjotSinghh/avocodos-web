@@ -29,3 +29,4 @@ Avocodos is a completely web3-based social media and learning platform.
 14. <strong>ESLint</strong>: JavaScript and TypeScript linter for maintaining code quality.
 15. <strong>Prettier</strong>: Code formatter for consistent code style.
 16. <strong>Sharp</strong>: High-performance image processing library for Node.js.
+17. <strong>Tembo</strong>: Postgres database as a service.

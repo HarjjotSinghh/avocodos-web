@@ -29,8 +29,10 @@ export default function Page() {
               height={200}
               className="!mb-6 hidden h-10 w-auto dark:block"
             /> */}
-            <h1 className="text-3xl font-bold capitalize">Create an account</h1>
-            <p className="max-w-[400px] text-pretty text-left text-muted-foreground">
+            <h3 className="text-3xl font-bold capitalize">
+              We&apos;re glad you&apos;re here
+            </h3>
+            <p className="max-w-[400px] text-pretty text-left text-foreground/80">
               Welcome to Avocodos, a completly web3-based social media and
               learning platform.
             </p>
@@ -50,7 +52,15 @@ export default function Page() {
             width={1280}
             height={720}
             draggable={false}
-            className="hidden h-screen w-full flex-1 select-none object-cover md:block"
+            className="hidden h-screen w-full flex-1 select-none object-cover dark:hidden dark:md:block"
+          />
+          <Image
+            src={"/auth-light.webp"}
+            alt=""
+            width={1280}
+            height={720}
+            draggable={false}
+            className="hidden h-screen w-full flex-1 select-none object-cover dark:hidden md:block"
           />
         </div>
       </div>

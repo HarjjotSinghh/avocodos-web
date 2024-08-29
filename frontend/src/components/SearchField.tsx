@@ -24,7 +24,7 @@ export default function SearchField() {
     >
       <div className="relative w-full">
         <Input name="q" placeholder="Search" className="pe-10" />
-        <SearchIcon className="absolute right-3 top-1/2 size-5 -translate-y-1/2 transform text-muted-foreground" />
+        <SearchIcon className="absolute right-3 top-1/2 size-5 -translate-y-1/2 transform text-foreground/80" />
       </div>
     </form>
   );

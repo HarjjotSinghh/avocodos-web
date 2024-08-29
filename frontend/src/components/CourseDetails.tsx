@@ -67,16 +67,11 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
               height={675}
               className="w-full rounded-t-lg object-cover"
             />
-            <CardHeader className="p-6 md:p-8">
-              <CardTitle className="text-pretty text-3xl">
-                {course.title}
-              </CardTitle>
-            </CardHeader>
+
             <CardContent className="p-6 !pt-0 md:p-8">
-              <p className="text-fore mb-4 text-foreground/80">
-                {course.description}
-              </p>
-              <h6 className="mb-2 inline-flex items-center gap-2">
+              <h4 className="mb-3 pt-6">{course.title}</h4>
+              <p className="mb-4 text-foreground/80">{course.description}</p>
+              <h6 className="mb-3 inline-flex items-center gap-2">
                 <UserIcon className="mt-0.5 size-5" /> Instructor
               </h6>
               <div className="mb-4 flex items-center space-x-2">
@@ -118,7 +113,7 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
                 </div>
               </div>
               <div className="mb-4">
-                <h6 className="mb-2 inline-flex items-center gap-2 text-xl font-bold">
+                <h6 className="mb-1 inline-flex items-center gap-2 text-xl font-bold">
                   <List className="mt-0.5 size-5" /> Course Content
                 </h6>
                 <ul className="list-inside list-disc space-y-1">
@@ -138,7 +133,7 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
         <div>
           <Card>
             <CardContent className="p-6">
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-foreground/80">
                 Get the course now for just
               </span>
               <p className="mb-4 text-3xl font-bold text-foreground/80">
@@ -166,7 +161,7 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
                 </DialogContent>
               </Dialog>
               <div className="mt-2 space-y-4 text-sm">
-                <p className="flex flex-col gap-2 text-foreground/80">
+                <p className="flex flex-col gap-2">
                   <span className="inline-flex items-center gap-2 text-xl font-bold">
                     <ClockIcon className="mt-0.5 size-5" /> Start Date
                   </span>{" "}
@@ -174,7 +169,7 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
                     ? formatDatePretty(course.startDate)
                     : "Flexible"}
                 </p>
-                <p className="flex flex-col gap-2 text-foreground/80">
+                <p className="flex flex-col gap-2">
                   <span className="inline-flex items-center gap-2 text-xl font-bold">
                     <ClockIcon className="mt-0.5 size-5" /> End Date
                   </span>{" "}

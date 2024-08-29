@@ -9,14 +9,18 @@ import { ColorPicker } from "@/components/ui/color-picker";
 import { BookUser, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import CommunityRolesSkeleton from "./skeletons/CommunityRolesSkeleton";
 import { Badge } from "./ui/badge";
+import { useTheme } from "next-themes";
 
 export default function CommunityRoles({
   communityName
 }: {
   communityName: string;
 }) {
+  const { theme } = useTheme();
   const [newRoleName, setNewRoleName] = useState("");
-  const [newRoleColor, setNewRoleColor] = useState("#3bf019");
+  const [newRoleColor, setNewRoleColor] = useState(
+    theme === "dark" ? "#3bf019" : "#2fbe13"
+  );
   const [isExpanded, setIsExpanded] = useState(false);
   const queryClient = useQueryClient();
 

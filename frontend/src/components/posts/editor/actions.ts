@@ -17,11 +17,23 @@ export async function submitPost(input: {
 
   const { content, mediaIds, communityName, badgeId } = createPostSchema.parse(input);
 
+  // Check if the community exists if communityName is provided
+  let validatedCommunityName: string | null = null;
+  if (communityName) {
+    const community = await prisma.community.findUnique({
+      where: { name: communityName },
+    });
+    if (!community) {
+      throw new Error(`Community "${communityName}" does not exist`);
+    }
+    validatedCommunityName = community.name;
+  }
+
   const newPost = await prisma.post.create({
     data: {
       content,
       userId: user.id,
-      communityName,
+      communityName: validatedCommunityName,
       badgeId,
       attachments: {
         connect: mediaIds.map((id) => ({ id })),

@@ -4,7 +4,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import UserAvatar from "@/components/UserAvatar";
@@ -23,7 +23,7 @@ interface NewChatDialogProps {
 
 export default function NewChatDialog({
   onOpenChange,
-  onChatCreated,
+  onChatCreated
 }: NewChatDialogProps) {
   const { client, setActiveChannel } = useChatContext();
 
@@ -49,14 +49,14 @@ export default function NewChatDialog({
             ? {
                 $or: [
                   { name: { $autocomplete: searchInputDebounced } },
-                  { username: { $autocomplete: searchInputDebounced } },
-                ],
+                  { username: { $autocomplete: searchInputDebounced } }
+                ]
               }
-            : {}),
+            : {})
         },
         { name: 1, username: 1 },
-        { limit: 15 },
-      ),
+        { limit: 15 }
+      )
   });
 
   const mutation = useMutation({
@@ -68,7 +68,7 @@ export default function NewChatDialog({
             ? loggedInUser.displayName +
               ", " +
               selectedUsers.map((u) => u.name).join(", ")
-            : undefined,
+            : undefined
       });
       await channel.create();
       return channel;
@@ -81,9 +81,9 @@ export default function NewChatDialog({
       console.error("Error starting chat", error);
       toast({
         variant: "destructive",
-        description: "Error starting chat. Please try again.",
+        description: "Error starting chat. Please try again."
       });
-    },
+    }
   });
 
   return (
@@ -94,7 +94,7 @@ export default function NewChatDialog({
         </DialogHeader>
         <div>
           <div className="group relative">
-            <SearchIcon className="absolute left-5 top-1/2 size-5 -translate-y-1/2 transform text-muted-foreground group-focus-within:text-primary" />
+            <SearchIcon className="absolute left-5 top-1/2 size-5 -translate-y-1/2 transform text-foreground/80 group-focus-within:text-primary" />
             <input
               placeholder="Search users..."
               className="h-12 w-full pe-4 ps-14 focus:outline-none"
@@ -110,7 +110,7 @@ export default function NewChatDialog({
                   user={user}
                   onRemove={() => {
                     setSelectedUsers((prev) =>
-                      prev.filter((u) => u.id !== user.id),
+                      prev.filter((u) => u.id !== user.id)
                     );
                   }}
                 />
@@ -129,17 +129,17 @@ export default function NewChatDialog({
                     setSelectedUsers((prev) =>
                       prev.some((u) => u.id === user.id)
                         ? prev.filter((u) => u.id !== user.id)
-                        : [...prev, user],
+                        : [...prev, user]
                     );
                   }}
                 />
               ))}
             {isSuccess && !data.users.length && (
-              <p className="my-3 text-center text-muted-foreground">
+              <p className="my-3 text-center text-foreground/80">
                 No users found. Try a different name.
               </p>
             )}
-            {isFetching && <Loader2 className="mx-auto my-3 animate-spin" />}
+            {isFetching && <Spinner />}
             {isError && (
               <p className="my-3 text-center text-destructive">
                 An error occurred while loading users.
@@ -177,7 +177,7 @@ function UserResult({ user, selected, onClick }: UserResultProps) {
         <UserAvatar avatarUrl={user.image} />
         <div className="flex flex-col text-start">
           <p className="font-bold">{user.name}</p>
-          <p className="text-muted-foreground">@{user.username}</p>
+          <p className="text-foreground/80">@{user.username}</p>
         </div>
       </div>
       {selected && <Check className="size-5 text-green-500" />}
@@ -198,7 +198,7 @@ function SelectedUserTag({ user, onRemove }: SelectedUserTagProps) {
     >
       <UserAvatar avatarUrl={user.image} size={24} />
       <p className="font-bold">{user.name}</p>
-      <X className="mx-2 size-5 text-muted-foreground" />
+      <X className="mx-2 size-5 text-foreground/80" />
     </button>
   );
 }

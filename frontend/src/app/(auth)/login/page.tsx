@@ -15,8 +15,8 @@ export default function Page() {
       <div className="flex h-full w-full items-center justify-center overflow-hidden bg-background">
         <div className="w-full space-y-10 overflow-y-auto p-4 md:max-w-lg md:p-16">
           <div>
-            <h1 className="text-left text-3xl font-bold">Login to Avocodos</h1>
-            <p className="mt-2 text-pretty text-left text-muted-foreground">
+            <h3 className="text-left text-3xl font-bold">Login to Avocodos</h3>
+            <p className="mt-2 text-pretty text-left text-foreground/80">
               Welcome back! Please enter your details below to continue.
             </p>
           </div>
@@ -41,7 +41,15 @@ export default function Page() {
             width={1280}
             height={720}
             draggable={false}
-            className="hidden h-screen w-full flex-1 select-none object-cover md:block"
+            className="hidden h-screen w-full flex-1 select-none object-cover dark:hidden dark:md:block"
+          />
+          <Image
+            src={"/auth-light.webp"}
+            alt=""
+            width={1280}
+            height={720}
+            draggable={false}
+            className="hidden h-screen w-full flex-1 select-none object-cover dark:hidden md:block"
           />
         </div>
       </div>

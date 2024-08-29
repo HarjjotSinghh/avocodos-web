@@ -68,11 +68,6 @@ export default function PostMoreButton({
   return (
     <>
       <div className="flex flex-row flex-wrap items-center gap-2">
-        <Link href={`/posts/${post.id}`}>
-          <Button size="icon" variant="ghost" className={className}>
-            <ExternalLink className="size-4 text-foreground/90" />
-          </Button>
-        </Link>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button size="icon" variant="ghost" className={className}>

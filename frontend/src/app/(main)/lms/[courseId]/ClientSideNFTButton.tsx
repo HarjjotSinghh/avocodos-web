@@ -1,9 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import React, { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
+import Spinner from "@/components/Spinner";
 import { User } from "@prisma/client";
+import { Loader2 } from "lucide-react";
 
 // New client-side component for NFT minting
 export default function ClientSideNFTButton({
@@ -47,13 +48,22 @@ export default function ClientSideNFTButton({
   };
 
   return (
-    <Button
-      className="inline-flex w-full items-center justify-center gap-2"
-      onClick={handleGetNFT}
-      disabled={isLoading}
-    >
-      {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-      {isLoading ? "Minting..." : "Get Your NFT Now"}
-    </Button>
+    <React.Fragment>
+      <Button
+        className="inline-flex w-full items-center justify-center gap-2"
+        onClick={handleGetNFT}
+        disabled={isLoading || !!!userData.walletAddress}
+      >
+        {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+        {isLoading ? "Minting..." : "Get Your NFT Now"}
+      </Button>
+      {!userData.walletAddress && (
+        <p className="mx-auto mt-4 max-w-sm text-center text-xs text-destructive">
+          You do not have a wallet address associated with this account. Please
+          log in with a valid account which has an associated wallet address to
+          continue.
+        </p>
+      )}
+    </React.Fragment>
   );
 }

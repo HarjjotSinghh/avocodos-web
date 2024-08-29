@@ -21,6 +21,10 @@ export async function GET(
         },
       },
       select: getUserDataSelect(loggedInUser.id),
+      // include: {
+      // communityRoles: true,
+      // assets: true,
+      // }
     });
 
     if (!user) {

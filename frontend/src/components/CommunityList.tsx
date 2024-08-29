@@ -24,7 +24,15 @@ function CommunityCard({ community }: { community: CommunityWithCounts }) {
           alt={community.name}
           width={300}
           height={200}
-          className="-z-[1] aspect-video h-auto w-full select-none object-cover dark:mix-blend-color-dodge dark:brightness-150 dark:contrast-125"
+          className="-z-[1] hidden aspect-video h-auto w-full select-none object-cover dark:block"
+          draggable={false}
+        />
+        <Image
+          src="/auth-light.webp"
+          alt={community.name}
+          width={300}
+          height={200}
+          className="-z-[1] block aspect-video h-auto w-full select-none object-cover dark:hidden"
           draggable={false}
         />
       </div>

@@ -9,6 +9,7 @@ import { ColorPicker } from "@/components/ui/color-picker";
 import { BadgeCheck, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import CommunityBadgesSkeleton from "./skeletons/CommunityBadgesSkeleton";
 import { Badge } from "./ui/badge";
+import { useTheme } from "next-themes";
 
 export default function CommunityBadges({
   communityName
@@ -16,10 +17,12 @@ export default function CommunityBadges({
   communityName: string;
 }) {
   const [newBadgeName, setNewBadgeName] = useState("");
-  const [newBadgeColor, setNewBadgeColor] = useState("#3bf019");
+  const { theme } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const queryClient = useQueryClient();
-
+  const [newBadgeColor, setNewBadgeColor] = useState(
+    theme === "dark" ? "#3bf019" : "#2fbe13"
+  );
   const { data: badges, isLoading } = useQuery({
     queryKey: ["community-badges", communityName],
     queryFn: () =>

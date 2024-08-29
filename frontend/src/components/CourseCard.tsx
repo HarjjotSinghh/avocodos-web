@@ -25,7 +25,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           style={{ aspectRatio: "600/400", objectFit: "cover" }}
         />
         <div className="space-y-2 p-6 md:p-8">
-          <h3 className="text-2xl font-bold">{title}</h3>
+          <h4>{title}</h4>
           <p className="text-foreground/80">{description}</p>
           <div className="!mt-8 flex items-center justify-between">
             <span className="text-lg font-bold">$9.99 / ₹800</span>

@@ -21,7 +21,15 @@ export function Courses({
 }) {
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-4xl font-bold">Browse Our Courses</h1>
+      <div>
+        <h2 className="text-4xl font-bold">Browse Our Courses</h2>
+        <p className="mt-2 text-foreground/80">
+          Explore our wide range of courses to enhance your skills and
+          knowledge. Enroll in a course and start learning today! Every user who
+          completes any course will get a custom NFT minted for them on the
+          Aptos network.
+        </p>
+      </div>
       <div className="flex w-full flex-col gap-8">
         {loading
           ? Array.from({ length: 6 }).map((_, index) => (
@@ -34,7 +42,7 @@ export function Courses({
             ))}
         {courses && !courses.length && !loading && (
           <div className="flex items-center justify-center">
-            <p className="text-muted-foreground">No courses found...</p>
+            <p className="text-foreground/80">No courses found...</p>
           </div>
         )}
       </div>
@@ -45,7 +53,7 @@ export function Courses({
 function CourseCard({ course }: { course: Course }) {
   return (
     <Link href={`/courses/${course.id}`}>
-      <Card className="w-full overflow-hidden rounded-2xl border-2 avocodos-transition hover:border-primary/80">
+      <Card className="w-full overflow-hidden rounded-2xl border-2 avocodos-transition hover:border-primary/15">
         <div className="overflow-hidden rounded-t-xl">
           <img
             src={course.imageUrl}
@@ -53,15 +61,13 @@ function CourseCard({ course }: { course: Course }) {
             className="h-64 w-full object-cover"
           />
         </div>
-        <CardHeader>
-          <CardTitle>{course.title}</CardTitle>
-        </CardHeader>
         <CardContent>
-          <p className="mb-4 text-muted-foreground">{course.description}</p>
+          <h4 className="mb-2 pt-6">{course.title}</h4>
+          <p className="mb-4 text-foreground/80">{course.description}</p>
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:gap-0">
             <Badge
               className="inline-flex flex-row items-center gap-2 text-base font-bold"
-              variant={"secondary"}
+              variant={"light"}
             >
               <span className="inline-flex items-center gap-1">
                 <DollarSign className="size-3.5" /> {course.price.toPrecision()}{" "}

@@ -25,6 +25,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CommunityBadge } from "@prisma/client";
 import kyInstance from "@/lib/ky";
 import { Label } from "@/components/ui/label";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface PostEditorProps {
   communityName?: string;
@@ -36,6 +37,7 @@ export default function PostEditor({
   placeholderText
 }: PostEditorProps): React.ReactNode {
   const { user } = useSession();
+  const queryClient = useQueryClient();
 
   const mutation = useSubmitPostMutation();
 
@@ -102,13 +104,36 @@ export default function PostEditor({
         badgeId: selectedBadge
       },
       {
-        onSuccess: () => {
+        onSuccess: (newPost) => {
           // Reset the editor
           editor?.commands.setContent("");
           // Reset attachments
           resetMediaUploads();
           // Reset selected badge
           setSelectedBadge(null);
+          // Invalidate the community posts query
+          queryClient.invalidateQueries({
+            queryKey: ["community-posts", communityName]
+          });
+
+          // Update the query cache with the new post data
+          queryClient.setQueryData(
+            ["community-posts", communityName],
+            (oldData: any) => {
+              if (oldData && oldData.pages) {
+                const newPages = oldData.pages.map(
+                  (page: any, index: number) => {
+                    if (index === 0) {
+                      return { ...page, posts: [newPost, ...page.posts] };
+                    }
+                    return page;
+                  }
+                );
+                return { ...oldData, pages: newPages };
+              }
+              return oldData;
+            }
+          );
         },
         onError: (error) => {
           console.error("Failed to submit post:", error);
@@ -129,11 +154,11 @@ export default function PostEditor({
     <div className="mb-4 flex flex-col gap-5 rounded-2xl bg-card p-5 shadow-sm md:p-6">
       <div className="flex gap-5">
         <UserAvatar avatarUrl={user.avatarUrl} className="hidden sm:inline" />
-        <div {...rootProps} className="w-full">
+        <div {...rootProps} className="w-full max-w-full">
           <EditorContent
             editor={editor}
             className={cn(
-              "max-h-[20rem] w-full overflow-y-auto rounded-2xl bg-background px-5 py-3",
+              "max-h-[20rem] max-w-full overflow-y-auto rounded-2xl bg-background px-5 py-3",
               isDragActive && "outline-dashed"
             )}
             onPaste={onPaste}
@@ -148,6 +173,23 @@ export default function PostEditor({
         />
       )}
       <div className="flex items-center justify-end gap-3">
+        {badges && badges.length > 0 && (
+          <Select
+            value={selectedBadge || ""}
+            onValueChange={(value: string) => setSelectedBadge(value)}
+          >
+            <SelectTrigger className="max-w-xs">
+              <SelectValue placeholder="Select a badge" />
+            </SelectTrigger>
+            <SelectContent className="max-w-xs">
+              {badges.map((badge: CommunityBadge) => (
+                <SelectItem key={badge.id} value={badge.id}>
+                  <span style={{ color: badge.color }}>{badge.name}</span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
         {isUploading && (
           <>
             <span className="text-sm">{uploadProgress ?? 0}%</span>
@@ -168,24 +210,6 @@ export default function PostEditor({
           Post
         </LoadingButton>
       </div>
-      {badges && badges.length > 0 && (
-        <Select
-          value={selectedBadge || ""}
-          onValueChange={(value: string) => setSelectedBadge(value)}
-        >
-          <Label>Select a badge</Label>
-          <SelectTrigger className="max-w-sm">
-            <SelectValue placeholder="Select a badge" />
-          </SelectTrigger>
-          <SelectContent className="max-w-sm">
-            {badges.map((badge) => (
-              <SelectItem key={badge.id} value={badge.id}>
-                <span style={{ color: badge.color }}>{badge.name}</span>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
     </div>
   );
 }

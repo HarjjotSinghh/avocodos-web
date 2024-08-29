@@ -3,10 +3,10 @@
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
 import Post from "@/components/posts/Post";
 import PostsLoadingSkeleton from "@/components/posts/PostsLoadingSkeleton";
+import Spinner from "@/components/Spinner";
 import kyInstance from "@/lib/ky";
 import { PostsPage } from "@/lib/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 
 export default function FollowingFeed() {
   const {
@@ -37,7 +37,7 @@ export default function FollowingFeed() {
 
   if (status === "success" && !posts.length && !hasNextPage) {
     return (
-      <p className="text-center text-muted-foreground">
+      <p className="text-center text-foreground/80">
         No posts found. Start following people to see their posts here.
       </p>
     );
@@ -64,7 +64,7 @@ export default function FollowingFeed() {
           posterIsTheCreator={false}
         />
       ))}
-      {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
+      {isFetchingNextPage && <Spinner />}
     </InfiniteScrollContainer>
   );
 }
