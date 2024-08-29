@@ -23,15 +23,15 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
   const { toast } = useToast();
 
   const wallets: readonly Wallet[] = [
-    new PetraWallet(),
-    new WelldoneWallet(),
-    new BitgetWallet(),
-    new FewchaWallet(),
-    new MartianWallet(),
-    new MSafeWalletAdapter(),
-    new PontemWallet(),
-    new TrustWallet(),
-    new OKXWallet()
+    new PetraWallet() as Wallet,
+    new WelldoneWallet() as Wallet,
+    new BitgetWallet() as Wallet,
+    new FewchaWallet() as Wallet,
+    new MartianWallet() as Wallet,
+    new MSafeWalletAdapter() as Wallet,
+    new PontemWallet() as Wallet,
+    new TrustWallet() as Wallet,
+    new OKXWallet() as Wallet
   ];
 
   return (
