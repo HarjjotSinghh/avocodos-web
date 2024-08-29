@@ -15,9 +15,11 @@ export async function POST(
 
         const { communityName } = params;
 
-        const community = await prisma.community.findUnique({
+        const community = await prisma?.community.findUnique({
             where: { name: communityName },
-            include: { members: true }
+            include: { members: true },
+            cacheStrategy: { ttl: 60 },
+
         });
 
         if (!community) {
@@ -29,7 +31,7 @@ export async function POST(
             return Response.json({ error: "This is a private community" }, { status: 403 });
         }
 
-        const updatedCommunity = await prisma.community.update({
+        const updatedCommunity = await prisma?.community.update({
             where: { name: communityName },
             data: {
                 members: {
@@ -64,9 +66,11 @@ export async function DELETE(
 
         const { communityName } = params;
 
-        const community = await prisma.community.findUnique({
+        const community = await prisma?.community.findUnique({
             where: { name: communityName },
-            include: { members: true }
+            include: { members: true },
+            cacheStrategy: { ttl: 60 },
+
         });
 
         if (!community) {
@@ -77,7 +81,7 @@ export async function DELETE(
             return Response.json({ error: "Creator cannot leave the community" }, { status: 403 });
         }
 
-        const updatedCommunity = await prisma.community.update({
+        const updatedCommunity = await prisma?.community.update({
             where: { name: communityName },
             data: {
                 members: {

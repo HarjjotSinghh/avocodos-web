@@ -13,7 +13,7 @@ export async function GET(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const bookmark = await prisma.bookmark.findUnique({
+    const bookmark = await prisma?.bookmark.findUnique({
       where: {
         userId_postId: {
           userId: loggedInUser.id,
@@ -44,7 +44,7 @@ export async function POST(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await prisma.bookmark.upsert({
+    await prisma?.bookmark.upsert({
       where: {
         userId_postId: {
           userId: loggedInUser.id,
@@ -76,7 +76,7 @@ export async function DELETE(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await prisma.bookmark.deleteMany({
+    await prisma?.bookmark.deleteMany({
       where: {
         userId: loggedInUser.id,
         postId,

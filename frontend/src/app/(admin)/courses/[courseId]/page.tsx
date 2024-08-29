@@ -12,7 +12,7 @@ interface PageProps {
 }
 
 async function getCourse(courseId: string) {
-  const course = await prisma.course.findUnique({
+  const course = await prisma?.course.findUnique({
     where: { id: courseId },
     include: {
       instructor: {
@@ -31,7 +31,8 @@ async function getCourse(courseId: string) {
         },
         orderBy: { order: "asc" }
       }
-    }
+    },
+    cacheStrategy: { ttl: 60 }
   });
 
   if (!course) notFound();

@@ -13,7 +13,7 @@ export async function GET(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma?.user.findUnique({
       where: { id: userId },
       select: {
         followers: {
@@ -30,6 +30,8 @@ export async function GET(
           },
         },
       },
+      cacheStrategy: { ttl: 60 },
+
     });
 
     if (!user) {
@@ -59,7 +61,7 @@ export async function POST(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await prisma.$transaction([
+    await prisma?.$transaction([
       prisma.follow.upsert({
         where: {
           followerId_followingId: {
@@ -100,7 +102,7 @@ export async function DELETE(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await prisma.$transaction([
+    await prisma?.$transaction([
       prisma.follow.deleteMany({
         where: {
           followerId: loggedInUser.id,

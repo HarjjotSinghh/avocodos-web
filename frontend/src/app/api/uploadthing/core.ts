@@ -62,7 +62,7 @@ export const fileRouter = {
       return {};
     })
     .onUploadComplete(async ({ file }) => {
-      const media = await prisma.media.create({
+      const media = await prisma?.media.create({
         data: {
           url: file.url.replace(
             "/f/",

@@ -15,9 +15,10 @@ export async function PUT(
     const postId = params.postId;
 
     try {
-        const post = await prisma.post.findUnique({
+        const post = await prisma?.post.findUnique({
             where: { id: postId },
-            select: { userId: true }
+            select: { userId: true },
+            cacheStrategy: { ttl: 60 },
         });
 
         if (!post) {
@@ -28,9 +29,9 @@ export async function PUT(
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
-        const updatedPost = await prisma.post.update({
+        const updatedPost = await prisma?.post.update({
             where: { id: postId },
-            data: { content }
+            data: { content },
         });
 
         return NextResponse.json(updatedPost);

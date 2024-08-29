@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const bookmarks = await prisma.bookmark.findMany({
+    const bookmarks = await prisma?.bookmark.findMany({
       where: {
         userId: user.id,
       },

@@ -17,7 +17,7 @@ export async function GET(
 
         if (communityName) {
             // Fetch a specific community by name
-            const community = await prisma.community.findUnique({
+            const community = await prisma?.community.findUnique({
                 where: { name: communityName },
                 include: {
                     members: true,
@@ -36,7 +36,9 @@ export async function GET(
                     moderators: true,
                     roles: true,
                     creator: true,
-                }
+                },
+                cacheStrategy: { ttl: 60 },
+
             });
 
             if (!community) {
@@ -46,12 +48,14 @@ export async function GET(
             return Response.json(community);
         } else {
             // Fetch all communities
-            const communities = await prisma.community.findMany({
+            const communities = await prisma?.community.findMany({
                 include: {
                     _count: {
                         select: { members: true, posts: true }
                     }
-                }
+                },
+                cacheStrategy: { ttl: 60 },
+
             });
 
             return Response.json(communities);
@@ -73,7 +77,7 @@ export async function POST(req: NextRequest) {
 
         const { name, description } = await req.json();
 
-        const community = await prisma.community.create({
+        const community = await prisma?.community.create({
             data: {
                 name,
                 description,
@@ -105,7 +109,7 @@ export async function PUT(
         }
 
         const { communityName } = await req.json();
-        await prisma.community.update({
+        await prisma?.community.update({
             where: { name: communityName },
             data: {
                 members: {
@@ -133,7 +137,7 @@ export async function DELETE(
 
         const { communityName } = await req.json();
 
-        await prisma.community.update({
+        await prisma?.community.update({
             where: { name: communityName },
             data: {
                 members: {

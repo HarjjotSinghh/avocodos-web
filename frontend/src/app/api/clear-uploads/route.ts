@@ -12,15 +12,15 @@ export async function GET(req: Request) {
       );
     }
 
-    const unusedMedia = await prisma.media.findMany({
+    const unusedMedia = await prisma?.media.findMany({
       where: {
         postId: null,
         ...(process.env.NODE_ENV === "production"
           ? {
-              createdAt: {
-                lte: new Date(Date.now() - 1000 * 60 * 60 * 24),
-              },
-            }
+            createdAt: {
+              lte: new Date(Date.now() - 1000 * 60 * 60 * 24),
+            },
+          }
           : {}),
       },
       select: {
@@ -36,7 +36,7 @@ export async function GET(req: Request) {
       ),
     );
 
-    await prisma.media.deleteMany({
+    await prisma?.media.deleteMany({
       where: {
         id: {
           in: unusedMedia.map((m) => m.id),

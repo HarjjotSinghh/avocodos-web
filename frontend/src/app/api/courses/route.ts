@@ -1,7 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { CoursesPage } from "@/lib/types";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { courseSchema } from "@/lib/validation";
 
 export async function POST(req: NextRequest) {
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const validatedData = courseSchema.parse(body);
 
-        const newCourse = await prisma.course.create({
+        const newCourse = await prisma?.course.create({
             data: {
                 ...validatedData,
                 startDate: validatedData.startDate ? new Date(validatedData.startDate) : null,
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
             return Response.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const courses = await prisma.course.findMany({
+        const courses = await prisma?.course.findMany({
             where: { isPublished: true },
             orderBy: { createdAt: "desc" },
             take: pageSize + 1,
@@ -70,8 +70,11 @@ export async function GET(req: NextRequest) {
                     },
                 },
             },
+            cacheStrategy: { ttl: 60 }
         });
-
+        if (!courses) {
+            return NextResponse.json({ error: "No courses found" }, { status: 404 })
+        }
         const mappedCourses = courses.map(({ instructor, ...course }) => ({
             ...course,
             instructor: {

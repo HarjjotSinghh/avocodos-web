@@ -29,13 +29,14 @@ export async function signUp(
 
     const userId = generateIdFromEntropySize(10);
 
-    const existingUsername = await prisma.user.findFirst({
+    const existingUsername = await prisma?.user.findFirst({
       where: {
         username: {
           equals: username,
           mode: "insensitive",
         },
       },
+      cacheStrategy: { ttl: 60 },
     });
 
     if (existingUsername) {
@@ -44,19 +45,21 @@ export async function signUp(
       };
     }
 
-    const existingEmail = await prisma.user.findFirst({
+    const existingEmail = await prisma?.user.findFirst({
       where: {
         email: {
           equals: email,
           mode: "insensitive",
         },
       },
+      cacheStrategy: { ttl: 60 },
     });
 
-    const existingWallet = await prisma.user.findFirst({
+    const existingWallet = await prisma?.user.findFirst({
       where: {
         walletAddress: account?.address,
       },
+      cacheStrategy: { ttl: 60 },
     });
 
     if (existingWallet) {
@@ -74,7 +77,7 @@ export async function signUp(
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    await prisma.$transaction(async (tx) => {
+    await prisma?.$transaction(async (tx) => {
       await tx.user.create({
         data: {
           id: userId,
@@ -112,9 +115,10 @@ export async function signUp(
 }
 
 export async function verifyOTP(userId: string, otp: string): Promise<{ success: boolean; error?: string }> {
-  const user = await prisma.user.findUnique({
+  const user = await prisma?.user.findUnique({
     where: { id: userId },
     select: { emailVerifyToken: true, emailVerifyExpires: true },
+    cacheStrategy: { ttl: 60 },
   });
 
   if (!user || user.emailVerifyToken !== otp) {
@@ -125,7 +129,7 @@ export async function verifyOTP(userId: string, otp: string): Promise<{ success:
     return { success: false, error: "OTP has expired" };
   }
 
-  await prisma.user.update({
+  await prisma?.user.update({
     where: { id: userId },
     data: {
       emailVerified: true,
@@ -134,7 +138,9 @@ export async function verifyOTP(userId: string, otp: string): Promise<{ success:
     },
   });
 
-  const session = await lucia.createSession(userId, {});
+  const session = await lucia.createSession(userId, {
+    emailVerified: true,
+  });
   const sessionCookie = lucia.createSessionCookie(session.id);
   cookies().set(
     sessionCookie.name,

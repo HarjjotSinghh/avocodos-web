@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const notifications = await prisma.notification.findMany({
+    const notifications = await prisma?.notification.findMany({
       where: {
         recipientId: user.id,
       },

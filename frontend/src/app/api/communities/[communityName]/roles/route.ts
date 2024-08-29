@@ -12,9 +12,11 @@ export async function POST(
         const { name, color } = await req.json();
         const { communityName } = params;
 
-        const community = await prisma.community.findUnique({
+        const community = await prisma?.community.findUnique({
             where: { name: communityName },
-            include: { moderators: true }
+            include: { moderators: true },
+            cacheStrategy: { ttl: 60 },
+
         });
 
         if (!community) return Response.json({ error: "Community not found" }, { status: 404 });
@@ -22,7 +24,7 @@ export async function POST(
             return Response.json({ error: "Unauthorized" }, { status: 403 });
         }
 
-        const role = await prisma.communityRole.create({
+        const role = await prisma?.communityRole.create({
             data: { name, color, communityName: community.name }
         });
 
@@ -41,7 +43,7 @@ export async function GET(
         const { user } = await validateRequest();
         if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
         const { communityName } = params;
-        const roles = await prisma.communityRole.findMany({
+        const roles = await prisma?.communityRole.findMany({
             where: { communityName: communityName }
         });
 

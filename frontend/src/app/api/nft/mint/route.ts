@@ -24,16 +24,19 @@ export async function POST(req: NextRequest) {
 
     const { courseId } = await req.json();
 
-    const userData = await prisma.user.findUnique({
-        where: { id: user.id }
+    const userData = await prisma?.user.findUnique({
+        where: { id: user.id },
+        cacheStrategy: { ttl: 60 },
+
     });
 
     if (!userData || !userData.walletAddress) {
         return NextResponse.json({ error: "User wallet address not found" }, { status: 400 });
     }
 
-    const course = await prisma.course.findUnique({
-        where: { id: courseId }
+    const course = await prisma?.course.findUnique({
+        where: { id: courseId },
+        cacheStrategy: { ttl: 60 }
     });
 
     if (!course) {
@@ -158,7 +161,7 @@ async function mintNFT(recipientAddress: string, courseTitle: string, displayNam
         courseId: courseId
     };
 
-    const createdAsset = await prisma.asset.create({
+    const createdAsset = await prisma?.asset.create({
         data: assetData
     });
 

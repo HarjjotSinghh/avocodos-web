@@ -20,14 +20,15 @@ interface PageProps {
 }
 
 const getUser = cache(async (username: string, loggedInUserId: string) => {
-  const user = await prisma.user.findFirst({
+  const user = await prisma?.user.findFirst({
     where: {
       username: {
         equals: username,
         mode: "insensitive"
       }
     },
-    select: getUserDataSelect(loggedInUserId)
+    select: getUserDataSelect(loggedInUserId),
+    cacheStrategy: { ttl: 60 }
   });
 
   if (!user) notFound();

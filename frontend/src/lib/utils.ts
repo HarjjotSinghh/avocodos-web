@@ -60,22 +60,25 @@ export function formatDatePretty(date: Date): string {
 
 
 export async function isCommunityModerator(userId: string, communityName: string): Promise<boolean> {
-  const community = await prisma.community.findUnique({
+  const community = await prisma?.community.findUnique({
     where: { name: communityName },
     include: { moderators: true },
+    cacheStrategy: { ttl: 60 },
+
   });
 
   return community?.creatorId === userId || community?.moderators.some(mod => mod.id === userId) || false;
 }
 
 export async function isCommunityMember(userId: string, communityName: string): Promise<boolean> {
-  const membership = await prisma.community.findFirst({
+  const membership = await prisma?.community.findFirst({
     where: {
       name: communityName,
       members: {
         some: { id: userId },
       },
     },
+    cacheStrategy: { ttl: 60 },
   });
 
   return !!membership;

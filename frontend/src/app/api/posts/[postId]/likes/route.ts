@@ -13,7 +13,7 @@ export async function GET(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const post = await prisma.post.findUnique({
+    const post = await prisma?.post.findUnique({
       where: { id: postId },
       select: {
         likes: {
@@ -30,6 +30,7 @@ export async function GET(
           },
         },
       },
+      cacheStrategy: { ttl: 60 },
     });
 
     if (!post) {
@@ -59,18 +60,19 @@ export async function POST(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const post = await prisma.post.findUnique({
+    const post = await prisma?.post.findUnique({
       where: { id: postId },
       select: {
         userId: true,
       },
+      cacheStrategy: { ttl: 60 },
     });
 
     if (!post) {
       return Response.json({ error: "Post not found" }, { status: 404 });
     }
 
-    await prisma.$transaction([
+    await prisma?.$transaction([
       prisma.like.upsert({
         where: {
           userId_postId: {
@@ -86,15 +88,15 @@ export async function POST(
       }),
       ...(loggedInUser.id !== post.userId
         ? [
-            prisma.notification.create({
-              data: {
-                issuerId: loggedInUser.id,
-                recipientId: post.userId,
-                postId,
-                type: "LIKE",
-              },
-            }),
-          ]
+          prisma.notification.create({
+            data: {
+              issuerId: loggedInUser.id,
+              recipientId: post.userId,
+              postId,
+              type: "LIKE",
+            },
+          }),
+        ]
         : []),
     ]);
 
@@ -116,18 +118,19 @@ export async function DELETE(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const post = await prisma.post.findUnique({
+    const post = await prisma?.post.findUnique({
       where: { id: postId },
       select: {
         userId: true,
       },
+      cacheStrategy: { ttl: 60 },
     });
 
     if (!post) {
       return Response.json({ error: "Post not found" }, { status: 404 });
     }
 
-    await prisma.$transaction([
+    await prisma?.$transaction([
       prisma.like.deleteMany({
         where: {
           userId: loggedInUser.id,

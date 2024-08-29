@@ -18,7 +18,7 @@ export async function submitComment({
 
   const { content: contentValidated } = createCommentSchema.parse({ content });
 
-  const [newComment] = await prisma.$transaction([
+  const [newComment] = (await prisma?.$transaction([
     prisma.comment.create({
       data: {
         content: contentValidated,
@@ -29,17 +29,17 @@ export async function submitComment({
     }),
     ...(post.user.id !== user.id
       ? [
-          prisma.notification.create({
-            data: {
-              issuerId: user.id,
-              recipientId: post.user.id,
-              postId: post.id,
-              type: "COMMENT",
-            },
-          }),
-        ]
+        prisma.notification.create({
+          data: {
+            issuerId: user.id,
+            recipientId: post.user.id,
+            postId: post.id,
+            type: "COMMENT",
+          },
+        }),
+      ]
       : []),
-  ]);
+  ])) ?? [];
 
   return newComment;
 }
@@ -49,15 +49,17 @@ export async function deleteComment(id: string) {
 
   if (!user) throw new Error("Unauthorized");
 
-  const comment = await prisma.comment.findUnique({
+  const comment = await prisma?.comment.findUnique({
     where: { id },
+    cacheStrategy: { ttl: 60 },
+
   });
 
   if (!comment) throw new Error("Comment not found");
 
   if (comment.userId !== user.id) throw new Error("Unauthorized");
 
-  const deletedComment = await prisma.comment.delete({
+  const deletedComment = await prisma?.comment.delete({
     where: { id },
     include: getCommentDataInclude(user.id),
   });

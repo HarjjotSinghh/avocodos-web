@@ -18,13 +18,19 @@ export async function GET(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const comments = await prisma.comment.findMany({
+    const comments = await prisma?.comment.findMany({
       where: { postId },
       include: getCommentDataInclude(user.id),
       orderBy: { createdAt: "asc" },
       take: -pageSize - 1,
       cursor: cursor ? { id: cursor } : undefined,
+      cacheStrategy: { ttl: 60 },
+
     });
+
+    if (!comments) {
+      throw new Error("Could not fetch data from the database. Please try again later.")
+    }
 
     const previousCursor = comments.length > pageSize ? comments[0].id : null;
 

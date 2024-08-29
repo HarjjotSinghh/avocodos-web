@@ -27,7 +27,7 @@ async function WhoToFollow() {
 
   if (!user) return null;
 
-  const usersToFollow = await prisma.user.findMany({
+  const usersToFollow = await prisma?.user.findMany({
     where: {
       NOT: {
         id: user.id
@@ -39,7 +39,8 @@ async function WhoToFollow() {
       }
     },
     select: getUserDataSelect(user.id),
-    take: 5
+    take: 5,
+    cacheStrategy: { ttl: 60 }
   });
 
   return (
@@ -49,7 +50,7 @@ async function WhoToFollow() {
         <Rss className="size-5" />
         Who to follow
       </div>
-      {usersToFollow.map((user) => (
+      {usersToFollow?.map((user) => (
         <div key={user.id} className="flex items-center justify-between gap-3">
           <UserTooltip user={user}>
             <Link
@@ -78,7 +79,7 @@ async function WhoToFollow() {
           />
         </div>
       ))}
-      {usersToFollow.length === 0 && (
+      {usersToFollow?.length === 0 && (
         <div className="text-center text-foreground/80">
           No users to follow... I guess you have followed single user who has
           ever signed up on Avocodos! 🤯
@@ -90,6 +91,9 @@ async function WhoToFollow() {
 
 const getTrendingTopics = unstable_cache(
   async () => {
+    if (!prisma) {
+      throw new Error("Ran into an error");
+    }
     const result = await prisma.$queryRaw<{ hashtag: string; count: bigint }[]>`
             SELECT LOWER(unnest(regexp_matches(content, '#[[:alnum:]_]+', 'g'))) AS hashtag, COUNT(*) AS count
             FROM posts

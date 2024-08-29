@@ -13,7 +13,7 @@ export async function GET(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await prisma.user.findFirst({
+    const user = await prisma?.user.findFirst({
       where: {
         username: {
           equals: username,
@@ -25,6 +25,7 @@ export async function GET(
       // communityRoles: true,
       // assets: true,
       // }
+      cacheStrategy: { ttl: 60 },
     });
 
     if (!user) {

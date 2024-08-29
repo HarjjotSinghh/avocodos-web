@@ -10,7 +10,7 @@ interface PageProps {
 }
 
 async function getCourse(courseId: string) {
-  const course = await prisma.course.findUnique({
+  const course = await prisma?.course.findUnique({
     where: { id: courseId },
     include: {
       lessons: {
@@ -21,7 +21,8 @@ async function getCourse(courseId: string) {
         },
         orderBy: { order: "asc" }
       }
-    }
+    },
+    cacheStrategy: { ttl: 60 }
   });
 
   if (!course) notFound();
@@ -31,8 +32,9 @@ async function getCourse(courseId: string) {
 
 export default async function LMSPage({ params: { courseId } }: PageProps) {
   const { user } = await validateRequest();
-  const userData = await prisma.user.findUnique({
-    where: { id: user?.id }
+  const userData = await prisma?.user.findUnique({
+    where: { id: user?.id },
+    cacheStrategy: { ttl: 60 }
   });
   if (!user || !userData) {
     redirect("/login");

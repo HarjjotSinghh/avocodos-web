@@ -11,10 +11,11 @@ export async function GET(
         const { user } = await validateRequest();
         if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
         const { communityName } = params;
-        const posts = await prisma.post.findMany({
+        const posts = await prisma?.post.findMany({
             where: { communityName },
             include: getPostDataInclude(user.id),
             orderBy: { createdAt: "desc" },
+            cacheStrategy: { ttl: 60 },
         });
 
 
@@ -39,9 +40,11 @@ export async function POST(
         const { content, badgeId } = await req.json();
         const { communityName } = params;
 
-        const community = await prisma.community.findUnique({
+        const community = await prisma?.community.findUnique({
             where: { name: communityName },
-            include: { members: true }
+            include: { members: true },
+            cacheStrategy: { ttl: 60 },
+
         });
 
         if (!community) return Response.json({ error: "Community not found" }, { status: 404 });
@@ -49,7 +52,7 @@ export async function POST(
             return Response.json({ error: "You must be a member to post" }, { status: 403 });
         }
 
-        const post = await prisma.post.create({
+        const post = await prisma?.post.create({
             data: {
                 content,
                 userId: user.id,
@@ -74,9 +77,10 @@ export async function DELETE(
         const { user } = await validateRequest();
         if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
         const { postId } = await req.json();
-        const post = await prisma.post.findUnique({
+        const post = await prisma?.post.findUnique({
             where: { id: postId },
-            include: { community: { include: { moderators: true } } }
+            include: { community: { include: { moderators: true } } },
+            cacheStrategy: { ttl: 60 },
         });
 
         if (!post) return Response.json({ error: "Post not found" }, { status: 404 });
@@ -87,7 +91,7 @@ export async function DELETE(
             return Response.json({ error: "Unauthorized" }, { status: 403 });
         }
 
-        await prisma.post.delete({ where: { id: postId } });
+        await prisma?.post.delete({ where: { id: postId } });
 
         return new Response(null, { status: 204 });
     } catch (error) {
@@ -104,14 +108,15 @@ export async function PATCH(
         if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
         const { content, postId } = await req.json();
 
-        const post = await prisma.post.findUnique({
-            where: { id: postId }
+        const post = await prisma?.post.findUnique({
+            where: { id: postId },
+            cacheStrategy: { ttl: 60 },
         });
 
         if (!post) return Response.json({ error: "Post not found" }, { status: 404 });
         if (post.userId !== user.id) return Response.json({ error: "Unauthorized" }, { status: 403 });
 
-        const updatedPost = await prisma.post.update({
+        const updatedPost = await prisma?.post.update({
             where: { id: postId },
             data: { content },
             include: { user: true, community: true }

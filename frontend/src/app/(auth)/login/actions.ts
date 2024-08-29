@@ -14,13 +14,14 @@ export async function login(
   try {
     const { username, password } = loginSchema.parse(credentials);
 
-    const existingUser = await prisma.user.findFirst({
+    const existingUser = await prisma?.user.findFirst({
       where: {
         username: {
           equals: username,
           mode: "insensitive",
         },
       },
+      cacheStrategy: { ttl: 60 },
     });
 
     if (!existingUser || !existingUser.passwordHash) {

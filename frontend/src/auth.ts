@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { cache } from "react";
 import prisma from "./lib/prisma";
 
-const adapter = new PrismaAdapter(prisma.session, prisma.user);
+const adapter = new PrismaAdapter(prisma?.session!, prisma?.user!);
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
@@ -14,13 +14,13 @@ export const lucia = new Lucia(adapter, {
       secure: process.env.NODE_ENV === "production",
     },
   },
-  getUserAttributes(databaseUserAttributes) {
+  getUserAttributes(DatabaseUser) {
     return {
-      id: databaseUserAttributes.id,
-      username: databaseUserAttributes.username,
-      displayName: databaseUserAttributes.displayName,
-      avatarUrl: databaseUserAttributes.avatarUrl,
-      googleId: databaseUserAttributes.googleId,
+      id: DatabaseUser.id,
+      username: DatabaseUser.username,
+      displayName: DatabaseUser.displayName,
+      avatarUrl: DatabaseUser.avatarUrl,
+      googleId: DatabaseUser.googleId,
     };
   },
 });
@@ -78,7 +78,7 @@ export const validateRequest = cache(
           sessionCookie.attributes,
         );
       }
-    } catch {}
+    } catch { }
 
     return result;
   },
