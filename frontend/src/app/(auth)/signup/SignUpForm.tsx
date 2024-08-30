@@ -1,5 +1,5 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema, SignUpValues } from "@/lib/validation";
@@ -32,6 +32,10 @@ export default function SignUpForm() {
   const [otpError, setOtpError] = useState<string>();
   const [otpAttempts, setOtpAttempts] = useState(0);
   const [userId, setUserId] = useState<string>();
+  const [passwordStrength, setPasswordStrength] = useState<
+    "weak" | "medium" | "strong" | null
+  >(null);
+  const [showPasswordStrength, setShowPasswordStrength] = useState(false);
 
   const { account, wallet, connected, isLoading } = useWallet();
 
@@ -45,6 +49,35 @@ export default function SignUpForm() {
       password: ""
     }
   });
+
+  const checkPasswordStrength = (password: string) => {
+    const hasMinLength = password.length >= 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    const strength =
+      (hasMinLength ? 1 : 0) +
+      (hasUppercase ? 1 : 0) +
+      (hasLowercase ? 1 : 0) +
+      (hasNumber ? 1 : 0) +
+      (hasSpecialChar ? 1 : 0);
+
+    if (strength < 3) return "weak";
+    if (strength < 5) return "medium";
+    return "strong";
+  };
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "password") {
+        setPasswordStrength(checkPasswordStrength(value.password || ""));
+        setShowPasswordStrength(!!value.password);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   async function onSubmit(values: SignUpValues) {
     setError(undefined);
@@ -88,7 +121,7 @@ export default function SignUpForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-3"
+          className="flex flex-col gap-3 px-1"
         >
           {error && <p className="text-left text-destructive">{error}</p>}
           <FormField
@@ -127,6 +160,11 @@ export default function SignUpForm() {
                   <PasswordInput placeholder="Password" {...field} />
                 </FormControl>
                 <FormMessage />
+                {showPasswordStrength && (
+                  <div className="mt-2 space-y-1 text-sm">
+                    <PasswordStrengthIndicator password={field.value} />
+                  </div>
+                )}
               </FormItem>
             )}
           />
@@ -176,4 +214,83 @@ export default function SignUpForm() {
       />
     </>
   );
+}
+
+function PasswordStrengthIndicator({ password }: { password: string }) {
+  const hasMinLength = password.length >= 8;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  const strength = checkPasswordStrength(password);
+  const isStrong =
+    hasMinLength && hasUppercase && hasLowercase && hasNumber && hasSpecialChar;
+
+  if (isStrong) {
+    return (
+      <p className="font-semibold text-green-500">
+        <CheckIcon className="mr-1 inline h-4 w-4" /> Strong password
+      </p>
+    );
+  }
+
+  return (
+    <>
+      <p
+        className={`font-semibold ${
+          strength === "weak"
+            ? "text-red-500"
+            : strength === "medium"
+              ? "text-yellow-500"
+              : "text-green-500"
+        }`}
+      >
+        Password Strength:{" "}
+        {strength.charAt(0).toUpperCase() + strength.slice(1)}
+      </p>
+      <p>
+        <StatusIcon checked={hasMinLength} /> At least 8 characters
+      </p>
+      <p>
+        <StatusIcon checked={hasUppercase} /> At least 1 uppercase letter
+      </p>
+      <p>
+        <StatusIcon checked={hasLowercase} /> At least 1 lowercase letter
+      </p>
+      <p>
+        <StatusIcon checked={hasNumber} /> At least 1 number
+      </p>
+      <p>
+        <StatusIcon checked={hasSpecialChar} /> At least 1 special character
+      </p>
+    </>
+  );
+}
+
+function StatusIcon({ checked }: { checked: boolean }) {
+  return checked ? (
+    <CheckIcon className="inline h-4 w-4 text-green-500" />
+  ) : (
+    <XIcon className="inline h-4 w-4 text-red-500" />
+  );
+}
+
+function checkPasswordStrength(password: string) {
+  const hasMinLength = password.length >= 8;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  const strength =
+    (hasMinLength ? 1 : 0) +
+    (hasUppercase ? 1 : 0) +
+    (hasLowercase ? 1 : 0) +
+    (hasNumber ? 1 : 0) +
+    (hasSpecialChar ? 1 : 0);
+
+  if (strength < 3) return "weak";
+  if (strength < 5) return "medium";
+  return "strong";
 }

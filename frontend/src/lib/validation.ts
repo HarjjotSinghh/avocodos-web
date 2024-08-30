@@ -4,12 +4,15 @@ import { AccountInfo, type WalletInfo } from "@aptos-labs/wallet-adapter-react";
 const requiredString = z.string().trim().min(1, "Required");
 
 export const signUpSchema = z.object({
-  email: requiredString.email("Invalid email address"),
-  username: requiredString.regex(
-    /^[a-zA-Z0-9_-]+$/,
-    "Only letters, numbers, - and _ allowed",
-  ),
-  password: requiredString.min(8, "Must be at least 8 characters"),
+  username: z.string().min(3).max(20),
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
   wallet: z.custom<WalletInfo>().or(z.null()),
   account: z.custom<AccountInfo>().or(z.null()),
 });

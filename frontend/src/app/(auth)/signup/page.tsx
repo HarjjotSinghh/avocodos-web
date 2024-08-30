@@ -37,7 +37,7 @@ export default function Page() {
               learning platform.
             </p>
           </div>
-          <div className="space-y-2">
+          <div className="h-full space-y-2 overflow-y-scroll md:h-[460px]">
             <SignUpForm />
             <Link href="/login" className="block text-center">
               Already have an account? Log in

@@ -32,6 +32,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger
@@ -43,6 +44,7 @@ import {
   DropdownMenuTrigger
 } from "./ui/dropdown-menu";
 import { useToast } from "./ui/use-toast";
+import Link from "next/link";
 
 interface WalletSelectorProps extends ComponentPropsWithoutRef<"div"> {
   walletSortingOptions?: WalletSortingOptions;
@@ -140,15 +142,31 @@ function ConnectWalletDialog({
     <DialogContent className="max-h-screen overflow-auto">
       <AboutAptosConnect renderEducationScreen={renderEducationScreen}>
         <DialogHeader>
-          <DialogTitle className="flex flex-col text-center leading-snug">
+          <DialogTitle
+            className="flex flex-col text-center leading-snug"
+            asChild
+          >
             {hasAptosConnectWallets ? (
               <>
-                <span>Connect Your Wallet</span>
+                <h2 className="text-center">Connect Your Wallet</h2>
               </>
             ) : (
-              "Connect Wallet"
+              <h2 className="text-center">Connect Wallet</h2>
             )}
           </DialogTitle>
+          <DialogDescription className="mx-auto max-w-[340px] text-pretty text-center text-foreground/80">
+            For new users, it is highly recommended to install the{" "}
+            <Link
+              href={
+                "https://chromewebstore.google.com/detail/petra-aptos-wallet/ejjladinnckdgjemekebdpeokbikhfci?hl=encategory%3Dextensions&pli=1"
+              }
+              target="_blank"
+              className="font-bold underline underline-offset-2"
+            >
+              Petra Wallet
+            </Link>{" "}
+            extension/app and continue with the same.
+          </DialogDescription>
         </DialogHeader>
 
         {/* {hasAptosConnectWallets && (
