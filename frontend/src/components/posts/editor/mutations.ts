@@ -35,20 +35,20 @@ export function useSubmitPostMutation() {
       queryClient.setQueriesData<InfiniteData<PostsPage, string | null>>(
         queryFilter,
         (oldData) => {
-          const firstPage = oldData?.pages[0];
+          if (!oldData || !newPost) return oldData;
+          const firstPage = oldData.pages[0];
+          if (!firstPage) return oldData;
 
-          if (firstPage) {
-            return {
-              pageParams: oldData.pageParams,
-              pages: [
-                {
-                  posts: [newPost, ...firstPage.posts],
-                  nextCursor: firstPage.nextCursor,
-                },
-                ...oldData.pages.slice(1),
-              ],
-            };
-          }
+          return {
+            ...oldData,
+            pages: [
+              {
+                ...firstPage,
+                posts: [newPost, ...firstPage.posts],
+              },
+              ...oldData.pages.slice(1),
+            ],
+          };
         },
       );
 

@@ -18,7 +18,7 @@ export async function GET() {
     });
 
     const data: NotificationCountInfo = {
-      unreadCount,
+      unreadCount: unreadCount ?? 0,
     };
 
     return Response.json(data);

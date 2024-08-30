@@ -1,7 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { notificationsInclude, NotificationsPage } from "@/lib/types";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
@@ -24,6 +24,10 @@ export async function GET(req: NextRequest) {
       take: pageSize + 1,
       cursor: cursor ? { id: cursor } : undefined,
     });
+
+    if (!notifications) {
+      return NextResponse.json({ error: "No notifications found." }, { status: 404 })
+    }
 
     const nextCursor =
       notifications.length > pageSize ? notifications[pageSize].id : null;

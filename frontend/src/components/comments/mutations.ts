@@ -23,20 +23,20 @@ export function useSubmitCommentMutation(postId: string) {
       queryClient.setQueryData<InfiniteData<CommentsPage, string | null>>(
         queryKey,
         (oldData) => {
-          const firstPage = oldData?.pages[0];
+          if (!oldData) return oldData;
+          const firstPage = oldData.pages[0];
+          if (!firstPage) return oldData;
 
-          if (firstPage) {
-            return {
-              pageParams: oldData.pageParams,
-              pages: [
-                {
-                  previousCursor: firstPage.previousCursor,
-                  comments: [...firstPage.comments, newComment],
-                },
-                ...oldData.pages.slice(1),
-              ],
-            };
-          }
+          return {
+            ...oldData,
+            pages: [
+              {
+                ...firstPage,
+                comments: [...firstPage.comments, newComment as CommentsPage['comments'][number]],
+              },
+              ...oldData.pages.slice(1),
+            ],
+          };
         },
       );
 
@@ -71,7 +71,7 @@ export function useDeleteCommentMutation() {
   const mutation = useMutation({
     mutationFn: deleteComment,
     onSuccess: async (deletedComment) => {
-      const queryKey: QueryKey = ["comments", deletedComment.postId];
+      const queryKey: QueryKey = ["comments", deletedComment?.postId];
 
       await queryClient.cancelQueries({ queryKey });
 
@@ -84,7 +84,7 @@ export function useDeleteCommentMutation() {
             pageParams: oldData.pageParams,
             pages: oldData.pages.map((page) => ({
               previousCursor: page.previousCursor,
-              comments: page.comments.filter((c) => c.id !== deletedComment.id),
+              comments: page.comments.filter((c) => c.id !== deletedComment?.id),
             })),
           };
         },

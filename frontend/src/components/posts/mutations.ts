@@ -33,7 +33,7 @@ export function useDeletePostMutation() {
             pageParams: oldData.pageParams,
             pages: oldData.pages.map((page) => ({
               nextCursor: page.nextCursor,
-              posts: page.posts.filter((p) => p.id !== deletedPost.id),
+              posts: page.posts.filter((p) => p.id !== deletedPost?.id),
             })),
           };
         },
@@ -43,8 +43,8 @@ export function useDeletePostMutation() {
         description: "Post deleted",
       });
 
-      if (pathname === `/posts/${deletedPost.id}`) {
-        router.push(`/users/${deletedPost.user.username}`);
+      if (pathname === `/posts/${deletedPost?.id}`) {
+        router.push(`/users/${deletedPost?.user.username}`);
       }
     },
     onError(error) {

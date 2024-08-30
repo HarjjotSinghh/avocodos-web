@@ -1,7 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude, PostsPage } from "@/lib/types";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
@@ -30,6 +30,10 @@ export async function GET(req: NextRequest) {
       take: pageSize + 1,
       cursor: cursor ? { id: cursor } : undefined,
     });
+
+    if (!bookmarks) {
+      return NextResponse.json({ posts: [], nextCursor: null }, { status: 200 })
+    }
 
     const nextCursor =
       bookmarks.length > pageSize ? bookmarks[pageSize].id : null;

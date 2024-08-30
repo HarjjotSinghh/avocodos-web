@@ -34,7 +34,7 @@ export const fileRouter = {
       );
 
       await Promise.all([
-        prisma.user.update({
+        prisma?.user.update({
           where: { id: metadata.user.id },
           data: {
             avatarUrl: newAvatarUrl,
@@ -72,7 +72,7 @@ export const fileRouter = {
         },
       });
 
-      return { mediaId: media.id };
+      return { mediaId: media?.id };
     }),
 } satisfies FileRouter;
 
