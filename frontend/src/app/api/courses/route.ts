@@ -3,6 +3,12 @@ import prisma from "@/lib/prisma";
 import { CoursesPage } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
 import { courseSchema } from "@/lib/validation";
+import { Redis } from "@upstash/redis";
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
+
+const redis = Redis.fromEnv();
 
 export async function POST(req: NextRequest) {
     try {
@@ -41,6 +47,15 @@ export async function GET(req: NextRequest) {
             return Response.json({ error: "Unauthorized" }, { status: 401 });
         }
 
+        // Generate a cache key based on the cursor and user
+        const cacheKey = `courses:${cursor}:${user.id}`;
+
+        // Try to get results from Redis cache
+        const cachedResults = await redis.get<string>(cacheKey);
+        if (cachedResults) {
+            return Response.json(JSON.parse(cachedResults));
+        }
+
         const courses = await prisma?.course.findMany({
             where: { isPublished: true },
             orderBy: { createdAt: "desc" },
@@ -70,11 +85,12 @@ export async function GET(req: NextRequest) {
                     },
                 },
             },
-            cacheStrategy: { ttl: 60 }
         });
-        if (!courses) {
+
+        if (!courses || courses.length === 0) {
             return NextResponse.json({ error: "No courses found" }, { status: 404 })
         }
+
         const mappedCourses = courses.map(({ instructor, ...course }) => ({
             ...course,
             instructor: {
@@ -93,6 +109,10 @@ export async function GET(req: NextRequest) {
             courses: mappedCourses.slice(0, pageSize),
             nextCursor,
         };
+
+        // Cache the results in Redis for 5 minutes
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 300, nx: true });
+
         return Response.json(data);
     } catch (error) {
         console.error(error);

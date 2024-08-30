@@ -139,7 +139,6 @@ export async function verifyOTP(userId: string, otp: string): Promise<{ success:
   });
 
   const session = await lucia.createSession(userId, {
-    emailVerified: true,
   });
   const sessionCookie = lucia.createSessionCookie(session.id);
   cookies().set(

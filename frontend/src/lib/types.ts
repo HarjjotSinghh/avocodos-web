@@ -1,4 +1,4 @@
-import { Course, Prisma } from "@prisma/client";
+import { Asset, Community, CommunityRole, Course, Prisma } from "@prisma/client";
 
 export function getUserDataSelect(loggedInUserId: string) {
   return {
@@ -16,10 +16,29 @@ export function getUserDataSelect(loggedInUserId: string) {
         followerId: true,
       },
     },
+    following: {
+      where: {
+        followingId: loggedInUserId,
+      },
+      select: {
+        followingId: true,
+      },
+    },
     _count: {
       select: {
         posts: true,
+        following: true,
         followers: true,
+        assets: true,
+        sessions: true,
+        communityRoles: true,
+        assignedRoles: true,
+        joinedCommunities: true,
+        moderatedCommunities: true,
+        createdCommunities: true,
+        bookmarks: true,
+        likes: true,
+        comments: true,
       },
     },
     communityRoles: true,
@@ -32,9 +51,33 @@ export function getUserDataSelect(loggedInUserId: string) {
   } satisfies Prisma.UserSelect;
 }
 
-export type UserData = Prisma.UserGetPayload<{
-  select: ReturnType<typeof getUserDataSelect>;
-}>;
+export interface UserData {
+  id: string;
+  username: string;
+  displayName: string;
+  avatarUrl: string;
+  bio: string;
+  createdAt: Date;
+  followers: {
+    followerId: string;
+  }[];
+  following: {
+    followingId: string;
+  }[];
+  _count: {
+    posts: number;
+    followers: number;
+    following: number;
+  };
+  communityRoles: CommunityRole[];
+  assets: Asset[];
+  assignedRoles: CommunityRole[];
+  joinedCommunities: Community[];
+  moderatedCommunities: Community[];
+  walletAddress: string;
+  email: string;
+  isFollowedByUser: boolean;
+}
 
 export function getPostDataInclude(loggedInUserId: string) {
   return {

@@ -4,9 +4,34 @@ import { notFound, redirect } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import ClientSideNFTButton from "./ClientSideNFTButton";
+import { Metadata } from "next";
 
 interface PageProps {
   params: { courseId: string };
+}
+
+export async function generateStaticParams() {
+  const courses = await prisma?.course.findMany({
+    select: { id: true },
+    cacheStrategy: { ttl: 3600 } // Cache for 1 hour
+  });
+
+  if (!courses) return [];
+
+  return courses.map((course) => ({
+    courseId: course.id
+  }));
+}
+
+export async function generateMetadata({
+  params
+}: PageProps): Promise<Metadata> {
+  const course = await getCourse(params.courseId);
+
+  return {
+    title: `${course.title} | Avocodos LMS`,
+    description: `Learn ${course.title} with Avocodos LMS`
+  };
 }
 
 async function getCourse(courseId: string) {

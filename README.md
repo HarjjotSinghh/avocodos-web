@@ -30,3 +30,5 @@ Avocodos is a completely web3-based social media and learning platform.
 15. <strong>Prettier</strong>: Code formatter for consistent code style.
 16. <strong>Sharp</strong>: High-performance image processing library for Node.js.
 17. <strong>Tembo</strong>: Postgres database as a service.
+18. <strong>Prisma Accelerate</strong>: Global database connection pool and caching layer.
+19. <strong>Aptos TypeScript SDK</strong>: SDK which allows you to interact on the Aptos blockchain.

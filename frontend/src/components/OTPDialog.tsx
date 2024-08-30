@@ -8,6 +8,7 @@ import {
   InputOTPSeparator
 } from "./ui/input-otp";
 import LoadingButton from "./LoadingButton";
+import { Loader2Icon } from "lucide-react";
 
 interface OTPDialogProps {
   open: boolean;
@@ -69,10 +70,12 @@ export default function OTPDialog({
           )}
           <LoadingButton
             onClick={() => onSubmit(otp)}
-            disabled={otp.length < 6 || attemptsLeft === 0}
+            disabled={otp.length < 6 || attemptsLeft === 0 || isPending}
             loading={isPending}
+            className="inline-flex w-full items-center justify-center gap-2"
           >
-            Verify OTP
+            {isPending && <Loader2Icon className="size-5 animate-spin" />}
+            {isPending ? "Verifying OTP..." : "Verify OTP"}
           </LoadingButton>
         </div>
       </DialogContent>

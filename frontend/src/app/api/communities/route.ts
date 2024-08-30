@@ -1,154 +1,88 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { Redis } from "@upstash/redis";
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
+
+const redis = Redis.fromEnv();
 
 // Handle GET requests
-export async function GET(
-    req: NextRequest,
-) {
+export async function GET(req: NextRequest) {
     try {
         const { user } = await validateRequest();
 
         if (!user) {
-            return Response.json({ error: "Unauthorized" }, { status: 401 });
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const communityName = req.nextUrl.searchParams.get('communityName');
+        const cacheKey = communityName
+            ? `community:${communityName}:${user.id}`
+            : `communities:all:${user.id}`;
+
+        // Try to get results from Redis cache
+        const cachedResults = await redis.get<string>(cacheKey);
+        if (cachedResults) {
+            try {
+                console.log('cachedResults', cachedResults);
+                return NextResponse.json(JSON.parse(cachedResults));
+            } catch (e) {
+                console.error("Failed to parse cachedResults:", e);
+                // Instead of returning an error, we'll proceed to fetch fresh data
+                console.log("Fetching fresh data due to cache parsing error");
+            }
+        }
+
+        let data;
 
         if (communityName) {
             // Fetch a specific community by name
             const community = await prisma?.community.findUnique({
                 where: { name: communityName },
                 include: {
-                    members: true,
+                    members: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
                     posts: {
+                        take: 10,
+                        orderBy: { createdAt: 'desc' },
                         include: {
-                            user: true,
-                            _count: {
-                                select: { comments: true, likes: true }
-                            }
+                            user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+                            _count: { select: { comments: true, likes: true } }
                         }
                     },
-                    _count: {
-                        select: { members: true, posts: true }
-                    },
+                    _count: { select: { members: true, posts: true } },
                     badges: true,
-                    moderators: true,
+                    moderators: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
                     roles: true,
-                    creator: true,
+                    creator: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
                 },
-                cacheStrategy: { ttl: 60 },
-
             });
 
             if (!community) {
-                return Response.json({ error: "Community not found" }, { status: 404 });
+                return NextResponse.json({ error: "Community not found" }, { status: 404 });
             }
 
-            return Response.json(community);
+            data = community;
         } else {
             // Fetch all communities
             const communities = await prisma?.community.findMany({
+                orderBy: { members: { _count: 'desc' } },
                 include: {
-                    _count: {
-                        select: { members: true, posts: true }
-                    }
+                    _count: { select: { members: true, posts: true } }
                 },
-                cacheStrategy: { ttl: 60 },
-
             });
 
-            return Response.json(communities);
-        }
-    } catch (error) {
-        console.error(error);
-        return Response.json({ error: "Internal server error" }, { status: 500 });
-    }
-}
-
-// Handle POST requests
-export async function POST(req: NextRequest) {
-    try {
-        const { user } = await validateRequest();
-
-        if (!user) {
-            return Response.json({ error: "Unauthorized" }, { status: 401 });
+            data = communities;
         }
 
-        const { name, description } = await req.json();
+        // Cache the results in Redis
+        console.log("Data to be cached:", data);
+        await redis.set(cacheKey, JSON.stringify(data), { ex: 300 }); // Cache for 5 minutes
 
-        const community = await prisma?.community.create({
-            data: {
-                name,
-                description,
-                creatorId: user.id,
-                members: {
-                    connect: { id: user.id }
-                },
-                moderators: {
-                    connect: { id: user.id }
-                }
-            }
-        });
-
-        return Response.json(community);
+        return NextResponse.json(data);
     } catch (error) {
         console.error(error);
-        return Response.json({ error: "Internal server error" }, { status: 500 });
-    }
-}
-
-export async function PUT(
-    req: NextRequest,
-) {
-    try {
-        const { user } = await validateRequest();
-
-        if (!user) {
-            return Response.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
-        const { communityName } = await req.json();
-        await prisma?.community.update({
-            where: { name: communityName },
-            data: {
-                members: {
-                    connect: { id: user.id }
-                }
-            }
-        });
-
-        return new Response(null, { status: 204 });
-    } catch (error) {
-        console.error(error);
-        return Response.json({ error: "Internal server error" }, { status: 500 });
-    }
-}
-
-export async function DELETE(
-    req: NextRequest,
-) {
-    try {
-        const { user } = await validateRequest();
-
-        if (!user) {
-            return Response.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
-        const { communityName } = await req.json();
-
-        await prisma?.community.update({
-            where: { name: communityName },
-            data: {
-                members: {
-                    disconnect: { id: user.id }
-                }
-            }
-        });
-
-        return new Response(null, { status: 204 });
-    } catch (error) {
-        console.error(error);
-        return Response.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

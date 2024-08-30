@@ -1,6 +1,6 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
-import { getUserDataSelect } from "@/lib/types";
+import { getUserDataSelect, UserData } from "@/lib/types";
 import { formatNumber } from "@/lib/utils";
 import { ChartNoAxesCombined, Loader2, Rss } from "lucide-react";
 import { unstable_cache } from "next/cache";
@@ -52,7 +52,7 @@ async function WhoToFollow() {
       </div>
       {usersToFollow?.map((user) => (
         <div key={user.id} className="flex items-center justify-between gap-3">
-          <UserTooltip user={user}>
+          <UserTooltip user={user as unknown as UserData}>
             <Link
               href={`/users/${user.username}`}
               className="flex items-center gap-3"
@@ -68,6 +68,12 @@ async function WhoToFollow() {
               </div>
             </Link>
           </UserTooltip>
+          {
+            console.log(
+              "user.followers TrendsSidebar",
+              user.followers
+            ) as React.ReactNode
+          }
           <FollowButton
             userId={user.id}
             initialState={{
@@ -80,9 +86,9 @@ async function WhoToFollow() {
         </div>
       ))}
       {usersToFollow?.length === 0 && (
-        <div className="text-center text-foreground/80">
-          No users to follow... I guess you have followed single user who has
-          ever signed up on Avocodos! 🤯
+        <div className="text-left text-sm text-foreground/80">
+          No users to follow... I guess you have followed every single user who
+          has ever signed up on Avocodos! 🤯
         </div>
       )}
     </div>

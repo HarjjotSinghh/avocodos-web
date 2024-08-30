@@ -1,17 +1,16 @@
 "use client";
 
 import { useSession } from "@/app/(main)/SessionProvider";
-import { PostData, UserData } from "@/lib/types";
+import { FollowerInfo, PostData, UserData } from "@/lib/types";
 import { cn, formatRelativeDate } from "@/lib/utils";
 import { CommunityRole, Media, User } from "@prisma/client";
 import { Crown, Edit, ExternalLink, MessageSquare, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import Comments from "../comments/Comments";
 import Linkify from "../Linkify";
 import UserAvatar from "../UserAvatar";
-import UserTooltip from "../UserTooltip";
 import BookmarkButton from "./BookmarkButton";
 import LikeButton from "./LikeButton";
 import PostMoreButton from "./PostMoreButton";
@@ -31,6 +30,22 @@ import { toast } from "../ui/use-toast";
 import { Badge } from "../ui/badge";
 import prisma from "@/lib/prisma";
 import { HTTPError } from "ky";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from "@/components/ui/popover";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
+import FollowerCount from "../FollowerCount";
+import PostsCount from "../PostsCount";
+import FollowButton from "../FollowButton";
+import UserTooltip from "../UserTooltip";
 
 interface PostProps {
   post: PostData;
@@ -67,21 +82,31 @@ export default function Post({
       <article className="group/post space-y-3 rounded-2xl bg-card p-5 shadow-sm">
         <div className="flex justify-between gap-3">
           <div className="flex flex-wrap gap-3">
-            <UserTooltip user={post.user}>
-              <Link href={`/users/${post.user.username}`}>
+            <UserTooltip user={post.user as unknown as UserData}>
+              <Link
+                className="flex items-center gap-2"
+                href={`/users/${post.user.username}`}
+              >
                 <UserAvatar avatarUrl={post.user.avatarUrl} />
-              </Link>
-            </UserTooltip>
-            <div>
-              <div className="flex flex-row flex-wrap items-center gap-2">
-                <UserTooltip user={post.user}>
+                <div className="flex flex-col gap-0">
                   <Link
                     href={`/users/${post.user.username}`}
                     className="inline-flex flex-row flex-wrap items-center gap-2 font-medium"
                   >
                     {post.user.displayName}
                   </Link>
-                </UserTooltip>
+                  <Link
+                    href={`/posts/${post.id}`}
+                    className="block text-xs text-foreground/80"
+                    suppressHydrationWarning
+                  >
+                    {formatRelativeDate(post.createdAt)}
+                  </Link>
+                </div>
+              </Link>
+            </UserTooltip>
+            <div>
+              <div className="flex flex-row flex-wrap items-center gap-2">
                 {posterIsTheCreator && (
                   <Badge
                     variant={"light"}
@@ -102,13 +127,6 @@ export default function Post({
                   </Badge>
                 ))}
               </div>
-              <Link
-                href={`/posts/${post.id}`}
-                className="block text-sm text-foreground/80"
-                suppressHydrationWarning
-              >
-                {formatRelativeDate(post.createdAt)}
-              </Link>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -241,5 +259,90 @@ function CommentButton({ post, onClick }: CommentButtonProps) {
         <span className="hidden sm:inline">comments</span>
       </span>
     </button>
+  );
+}
+
+interface UserTooltipProps {
+  children: React.ReactNode;
+  username: string;
+}
+
+function UserTooltip2({ children, username }: UserTooltipProps) {
+  const { user: loggedInUser } = useSession();
+  const queryClient = useQueryClient();
+
+  const { data: userData, isLoading } = useQuery({
+    queryKey: ["user-data", username],
+    queryFn: () =>
+      kyInstance.get(`/api/users/username/${username}`).json<UserData>()
+  });
+  console.log("userData.followers", userData?.followers);
+  const isFollowedByUser = userData?.followers
+    ? userData?.followers.some(
+        (follower) => follower.followerId === loggedInUser.id
+      )
+    : false;
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipContent className="w-80 p-4">
+          {isLoading ? (
+            <p>Loading user data...</p>
+          ) : userData ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <UserAvatar avatarUrl={userData.avatarUrl} size={48} />
+                  <div>
+                    <h5>{userData.displayName}</h5>
+                    <p className="text-sm text-muted-foreground">
+                      @{userData.username}
+                    </p>
+                  </div>
+                </div>
+                {
+                  console.log(
+                    "userData.following",
+                    userData.following
+                  ) as ReactNode
+                }
+                {userData.id !== loggedInUser.id && (
+                  <FollowButton
+                    userId={userData.id}
+                    initialState={{
+                      followers: userData._count.followers,
+                      isFollowedByUser: userData.following.some(
+                        ({ followingId }) => followingId === userData.id
+                      )
+                    }}
+                  />
+                )}
+              </div>
+              {userData.bio && (
+                <Linkify>
+                  <div className="line-clamp-6 whitespace-pre-line text-pretty break-words text-base text-foreground/80">
+                    {userData.bio}
+                  </div>
+                </Linkify>
+              )}
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <FollowerCount
+                  userId={userData.id}
+                  initialState={{
+                    followers: userData._count.followers,
+                    isFollowedByUser: isFollowedByUser!
+                  }}
+                />
+                <PostsCount count={userData._count.posts} />
+              </div>
+            </div>
+          ) : (
+            <p>User not found</p>
+          )}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

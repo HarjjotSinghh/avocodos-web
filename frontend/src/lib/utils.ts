@@ -83,3 +83,17 @@ export async function isCommunityMember(userId: string, communityName: string): 
 
   return !!membership;
 }
+
+export async function isUserFollowed(userId: string, followerId: string): Promise<boolean> {
+  const follower = await prisma?.user.findUnique({
+    where: {
+      id: userId,
+      followers: {
+        some: {
+          followerId,
+        },
+      },
+    },
+  });
+  return !!follower;
+}

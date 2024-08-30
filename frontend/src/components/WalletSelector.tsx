@@ -241,9 +241,11 @@ function WalletRow({ wallet, onConnect }: WalletRowProps) {
         <WalletItem.Name className="text-base font-normal" />
       </div>
       {isInstallRequired(wallet) ? (
-        <Button size="sm" variant="ghost" asChild>
-          <WalletItem.InstallLink />
-        </Button>
+        <WalletItem.InstallLink>
+          <Button size="sm" variant="secondary">
+            Install Wallet
+          </Button>
+        </WalletItem.InstallLink>
       ) : (
         <WalletItem.ConnectButton asChild>
           <Button size="sm">Connect</Button>
