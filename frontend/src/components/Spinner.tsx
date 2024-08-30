@@ -3,7 +3,7 @@ import React from "react";
 const Spinner: React.FC = () => {
   return (
     <div className="relative">
-      <div className="absolute inset-0 left-1/2 top-1/2 size-24 translate-x-[-50%] translate-y-[-50%] rounded-full bg-primary opacity-20 blur-[90px] dark:opacity-35" />
+      {/* <div className="absolute inset-0 left-1/2 top-1/2 size-24 translate-x-[-50%] translate-y-[-50%] rounded-full bg-primary opacity-20 blur-[90px] dark:opacity-35" /> */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
