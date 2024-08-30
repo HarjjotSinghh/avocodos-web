@@ -58,8 +58,6 @@ export default function Post({
     },
     staleTime: Infinity
   });
-  console.log("userData", userData);
-  console.log("user", user);
   const [showComments, setShowComments] = useState(false);
 
   return (

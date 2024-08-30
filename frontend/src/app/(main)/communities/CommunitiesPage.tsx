@@ -1,10 +1,12 @@
 import React, { Suspense } from "react";
 import CommunityList from "@/components/CommunityList";
+import JoinedCommunityList from "@/components/JoinedCommunityList";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Loader2, PlusCircle } from "lucide-react";
+import { PlusCircle, User, Users } from "lucide-react";
 import CommunitiesPageSkeleton from "@/components/skeletons/CommunitiesPageSkeleton";
 import Spinner from "@/components/Spinner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function CommunitiesPage() {
   return (
@@ -23,7 +25,32 @@ export default function CommunitiesPage() {
           </Link>
         </div>
         <Suspense fallback={<Spinner />}>
-          <CommunityList />
+          <Tabs defaultValue="all">
+            <TabsList className="mb-4 rounded-2xl">
+              <TabsTrigger
+                value="all"
+                className="inline-flex flex-row items-center gap-2 rounded-xl"
+              >
+                <Users className="size-4" /> All Communities
+              </TabsTrigger>
+              <TabsTrigger
+                value="joined"
+                className="inline-flex flex-row items-center gap-2 rounded-xl"
+              >
+                <User className="size-4" /> Joined Communities
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="all" className="rounded-2xl">
+              <Suspense fallback={<Spinner />}>
+                <CommunityList />
+              </Suspense>
+            </TabsContent>
+            <TabsContent value="joined">
+              <Suspense fallback={<Spinner />}>
+                <JoinedCommunityList />
+              </Suspense>
+            </TabsContent>
+          </Tabs>
         </Suspense>
       </main>
     </Suspense>

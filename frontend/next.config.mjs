@@ -12,7 +12,7 @@ const nextConfig = {
       static: 180
     }
   },
-  swcMinify: false,
+  swcMinify: true,
   // serverExternalPackages: ["@node-rs/argon2"],
   images: {
     remotePatterns: [

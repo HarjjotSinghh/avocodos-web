@@ -51,16 +51,16 @@ interface ExtendedCommunity extends Community {
   moderators: User[];
 }
 
-export default function CommunityPage({
-  communityName
-}: {
+interface CommunityPageProps {
   communityName: string;
-}) {
+}
+
+export default function CommunityPage({ communityName }: CommunityPageProps) {
   const { user } = useSession();
   const queryClient = useQueryClient();
   const [isModDialogOpen, setIsModDialogOpen] = useState(false);
 
-  const { data: community, isLoading: communityLoading } =
+  const { data: communityData, isLoading: communityLoading } =
     useQuery<ExtendedCommunity>({
       queryKey: ["community", communityName],
       queryFn: () =>
@@ -139,7 +139,7 @@ export default function CommunityPage({
 
   if (communityLoading || postsLoading) return <CommunityPageSkeleton />;
 
-  if (!community)
+  if (!communityData)
     return (
       <p className="text-left text-sm text-foreground/80">
         Community not found
@@ -147,17 +147,17 @@ export default function CommunityPage({
     );
 
   const isMember =
-    community.members?.some((member) => member.id === user.id) ?? false;
+    communityData.members?.some((member) => member.id === user.id) ?? false;
   const isModerator =
-    community.moderators?.some((mod) => mod.id === user.id) ?? false;
-  const isCreator = community.creatorId === user.id;
+    communityData.moderators?.some((mod) => mod.id === user.id) ?? false;
+  const isCreator = communityData.creatorId === user.id;
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
       <div className="mb-4 flex flex-col items-start justify-between gap-4 md:flex-row">
         <div className="mb-4 max-w-full shrink grow-0 md:max-w-[70%]">
-          <h1 className="pb-2">{community.name}</h1>
+          <h1 className="pb-2">{communityData.name}</h1>
           <p className="whitespace-pre-wrap text-sm leading-[1.6] text-foreground/80">
-            {community.description}
+            {communityData.description}
           </p>
         </div>
         <div className="grid grid-cols-1 gap-4">
@@ -221,7 +221,7 @@ export default function CommunityPage({
       {isMember && (
         <PostEditor
           communityName={communityName}
-          placeholderText={`Share something with the ${community.name} community!`}
+          placeholderText={`Share something with the ${communityData.name} community!`}
         />
       )}
       <div className="flex flex-col gap-8">
@@ -233,7 +233,7 @@ export default function CommunityPage({
                 <Post
                   post={post}
                   canModerate={isModerator || isCreator}
-                  posterIsTheCreator={post.user.id === community.creatorId}
+                  posterIsTheCreator={post.user.id === communityData.creatorId}
                   communityBadge={post.badge}
                 />
               </React.Fragment>
@@ -248,7 +248,7 @@ export default function CommunityPage({
         <Clock className="size-3.5" />{" "}
         <span>
           This community was created on{" "}
-          {formatDate(community.createdAt, "MMMM do, yyyy")}
+          {formatDate(communityData.createdAt, "MMMM do, yyyy")}
         </span>
       </div>
     </div>

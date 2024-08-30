@@ -7,10 +7,10 @@ import UserTooltip from "@/components/UserTooltip";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude, UserData } from "@/lib/types";
 import Spinner from "@/components/Spinner";
-import { Metadata } from "next";
+import { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { cache, Suspense } from "react";
+import { cache, ReactNode, Suspense } from "react";
 
 interface PageProps {
   params: { postId: string };
@@ -30,17 +30,44 @@ const getPost = cache(async (postId: string, loggedInUserId: string) => {
   return post;
 });
 
-export async function generateMetadata({
-  params: { postId }
-}: PageProps): Promise<Metadata> {
-  const { user } = await validateRequest();
+export async function generateStaticParams() {
+  const posts = await prisma?.post.findMany({
+    select: { id: true }
+  });
 
-  if (!user) return {};
+  if (!posts) return [];
 
-  const post = await getPost(postId, user.id);
+  return posts.map((post) => ({
+    postId: post.id
+  }));
+}
+
+export async function generateMetadata(
+  { params }: PageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const post = await prisma?.post.findUnique({
+    where: { id: params.postId },
+    include: {
+      user: {
+        select: {
+          displayName: true,
+          username: true
+        }
+      }
+    }
+  });
+
+  if (!post) return {};
+
+  const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: `${post.user.displayName}: ${post.content.slice(0, 50)}...`
+    title: `${post.user.displayName}: ${post.content.slice(0, 50)}...`,
+    description: post.content.slice(0, 200),
+    openGraph: {
+      images: [`/api/og?postId=${post.id}`, ...previousImages]
+    }
   };
 }
 

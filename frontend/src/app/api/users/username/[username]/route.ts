@@ -20,7 +20,18 @@ export async function GET(
           mode: "insensitive",
         },
       },
-      select: getUserDataSelect(loggedInUser.id),
+      select: {
+        ...getUserDataSelect(loggedInUser.id),
+        followers: true,
+        following: true,
+        _count: {
+          select: {
+            followers: true,
+            following: true,
+            posts: true,
+          },
+        },
+      },
       // include: {
       // communityRoles: true,
       // assets: true,

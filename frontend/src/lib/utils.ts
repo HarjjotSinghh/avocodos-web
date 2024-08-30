@@ -2,6 +2,9 @@ import { type ClassValue, clsx } from "clsx";
 import { formatDate, formatDistanceToNowStrict } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import prisma from "@/lib/prisma";
+import { cache } from "react";
+import { getUserDataSelect } from "./types";
+import { notFound } from "next/navigation";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -83,3 +86,29 @@ export async function isCommunityMember(userId: string, communityName: string): 
 
   return !!membership;
 }
+
+export const getUser = async (username: string, loggedInUserId: string) => {
+  console.log(username, loggedInUserId);
+  const user = await prisma?.user.findFirst({
+    where: {
+      username: {
+        equals: username,
+        mode: "insensitive"
+      }
+    },
+    select: {
+      _count: {
+        select: {
+          followers: true,
+          following: true,
+          posts: true,
+        }
+      }
+    },
+    cacheStrategy: { ttl: 60 }
+  });
+  console.log("user", user);
+  if (!user) notFound();
+
+  return user;
+};

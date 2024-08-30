@@ -8,15 +8,28 @@ import prisma from "@/lib/prisma";
 import { FollowerInfo, getUserDataSelect, UserData } from "@/lib/types";
 import { formatNumber } from "@/lib/utils";
 import { formatDate } from "date-fns";
-import { Metadata } from "next";
+import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import EditProfileButton from "./EditProfileButton";
 import UserPosts from "./UserPosts";
 import PostsCount from "@/components/PostsCount";
+import { User } from "lucia";
 
 interface PageProps {
   params: { username: string };
+}
+
+export async function generateStaticParams() {
+  const users = await prisma?.user.findMany({
+    select: { username: true }
+  });
+
+  if (!users) return [];
+
+  return users.map((user) => ({
+    username: user.username
+  }));
 }
 
 const getUser = cache(async (username: string, loggedInUserId: string) => {
@@ -36,17 +49,34 @@ const getUser = cache(async (username: string, loggedInUserId: string) => {
   return user;
 });
 
-export async function generateMetadata({
-  params: { username }
-}: PageProps): Promise<Metadata> {
-  const { user: loggedInUser } = await validateRequest();
+export async function generateMetadata(
+  { params }: PageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const user = await prisma?.user.findFirst({
+    where: {
+      username: {
+        equals: params.username,
+        mode: "insensitive"
+      }
+    },
+    select: {
+      displayName: true,
+      username: true,
+      bio: true
+    }
+  });
 
-  if (!loggedInUser) return {};
+  if (!user) return {};
 
-  const user = await getUser(username, loggedInUser.id);
+  const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: `${user.displayName} (@${user.username})`
+    title: `${user.displayName} (@${user.username})`,
+    description: user.bio || `Profile of ${user.displayName}`,
+    openGraph: {
+      images: [`/api/og?username=${user.username}`, ...previousImages]
+    }
   };
 }
 
@@ -78,7 +108,6 @@ export default async function Page({ params: { username } }: PageProps) {
     </main>
   );
 }
-
 interface UserProfileProps {
   user: UserData;
   loggedInUserId: string;

@@ -5,7 +5,7 @@ import { formatNumber } from "@/lib/utils";
 import { ChartNoAxesCombined, Loader2, Rss } from "lucide-react";
 import { unstable_cache } from "next/cache";
 import Link from "next/link";
-import { Suspense } from "react";
+import { ReactNode, Suspense } from "react";
 import FollowButton from "./FollowButton";
 import UserAvatar from "./UserAvatar";
 import UserTooltip from "./UserTooltip";
