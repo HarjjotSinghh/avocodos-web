@@ -1,5 +1,5 @@
 # Avocodos
-Avocodos is a completely web3-based social media and learning platform.
+Avocodos is a completely web3-based social media, collaborative and learning platform.
 
 ## Features
 - Create and view courses
