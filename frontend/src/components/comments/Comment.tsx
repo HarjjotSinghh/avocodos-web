@@ -5,6 +5,7 @@ import Link from "next/link";
 import UserAvatar from "../UserAvatar";
 import UserTooltip from "../UserTooltip";
 import CommentMoreButton from "./CommentMoreButton";
+import { UserData } from "@/lib/types";
 
 interface CommentProps {
   comment: CommentData;
@@ -16,7 +17,9 @@ export default function Comment({ comment }: CommentProps) {
   return (
     <div className="group/comment flex gap-3 py-3">
       <span className="hidden sm:inline">
-        <UserTooltip user={comment.user}>
+        <UserTooltip
+          user={{ ...comment.user, isFollowedByUser: false } as UserData}
+        >
           <Link href={`/users/${comment.user.username}`}>
             <UserAvatar avatarUrl={comment.user.avatarUrl} size={40} />
           </Link>
@@ -24,7 +27,16 @@ export default function Comment({ comment }: CommentProps) {
       </span>
       <div>
         <div className="flex items-center gap-1 text-sm">
-          <UserTooltip user={comment.user}>
+          <UserTooltip
+            user={
+              {
+                ...comment.user,
+                isFollowedByUser: false,
+                avatarUrl: comment.user.avatarUrl ?? "",
+                bio: comment.user.bio ?? "" // Add this line
+              } as UserData
+            }
+          >
             <Link
               href={`/users/${comment.user.username}`}
               className="font-medium"

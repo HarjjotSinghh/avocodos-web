@@ -23,6 +23,7 @@ import prisma from "@/lib/prisma";
 import { formatDate } from "date-fns";
 import { useTheme } from "next-themes";
 import { toast } from "@/components/ui/use-toast";
+import { PostData } from "@/lib/types";
 
 interface ExtendedPost extends PrismaPost {
   user: User & {
@@ -33,6 +34,14 @@ interface ExtendedPost extends PrismaPost {
     moderatedCommunities: any[]; // Add this
     assignedRoles: any[]; // Add this
     assets: any[]; // Add this
+    posts: {
+      id: string;
+      title: string;
+      content: string;
+      createdAt: Date;
+      updatedAt: Date;
+      badgeId: string | null;
+    }[];
   };
   likes: any[];
   bookmarks: any[];
@@ -231,7 +240,7 @@ export default function CommunityPage({ communityName }: CommunityPageProps) {
             return (
               <React.Fragment key={post.id}>
                 <Post
-                  post={post}
+                  post={post as unknown as PostData}
                   canModerate={isModerator || isCreator}
                   posterIsTheCreator={post.user.id === communityData.creatorId}
                   communityBadge={post.badge}
