@@ -3,9 +3,8 @@
 [![CC BY-NC 4.0][cc-by-nc-shield]][cc-by-nc]
 ---
 [![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/green?icon=github)](https://github.com/Naereen/badges/)
-[![Website https://avocodos-web.vercel.app](https://img.shields.io/website-up-down-green-red/http/monip.org.svg)](https://avocodos-web.vercel.app/)
 [![GitHub stars](https://badgen.net/github/stars/HarjjotSinghh/avocodos-web?color=green)](https://GitHub.com/HarjjotSinghh/avocodos-web/stargazers/)
-[![Maintainer](https://img.shields.io/badge/maintainer-Harjot%20Singh%20Rana-green)](https://harjot.pro)
+[![Maintainer](https://badgen.net/badge/maintainer/Harjot%20Singh%20Rana/green)](https://harjot.pro)
 [![GitHub branches](https://badgen.net/github/branches/HarjjotSinghh/avocodos-web?color=green)](https://github.com/HarjjotSinghh/avocodos-web)
 [![GitHub commits](https://badgen.net/github/commits/HarjjotSinghh/avocodos-web?color=green)](https://github.com/HarjjotSinghh/avocodos-web/commits/main)
 [![GitHub last commit](https://badgen.net/github/last-commit/HarjjotSinghh/avocodos-web?color=green)](https://github.com/HarjjotSinghh/avocodos-web/commits/main)
