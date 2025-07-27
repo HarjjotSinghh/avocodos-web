@@ -1,4 +1,4 @@
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import FollowButton from "@/components/FollowButton";
 import Linkify from "@/components/Linkify";
 import Post from "@/components/posts/Post";
@@ -46,8 +46,9 @@ export async function generateMetadata(
   { params }: PageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const { postId } = await params;
   const post = await prisma?.post.findUnique({
-    where: { id: params.postId },
+    where: { id: postId },
     include: {
       user: {
         select: {

@@ -1,6 +1,6 @@
 import React from "react";
 import SessionProvider from "@/app/(main)/SessionProvider";
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import { redirect } from "next/navigation";
 import Navbar from "@/app/(main)/Navbar";
 import MenuBar from "@/app/(main)/MenuBar";

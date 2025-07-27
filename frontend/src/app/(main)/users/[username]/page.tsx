@@ -1,4 +1,4 @@
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import FollowButton from "@/components/FollowButton";
 import FollowerCount from "@/components/FollowerCount";
 import Linkify from "@/components/Linkify";
@@ -53,10 +53,11 @@ export async function generateMetadata(
   { params }: PageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const { username } = await params;
   const user = await prisma?.user.findFirst({
     where: {
       username: {
-        equals: params.username,
+        equals: username,
         mode: "insensitive"
       }
     },

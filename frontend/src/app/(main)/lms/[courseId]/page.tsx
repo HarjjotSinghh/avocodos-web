@@ -1,4 +1,4 @@
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
@@ -26,7 +26,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params
 }: PageProps): Promise<Metadata> {
-  const course = await getCourse(params.courseId);
+  const { courseId } = await params;
+  const course = await getCourse(courseId);
 
   return {
     title: `${course.title} | Avocodos LMS`,

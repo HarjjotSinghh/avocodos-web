@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 
 export async function PUT(
     req: NextRequest,
@@ -12,7 +12,7 @@ export async function PUT(
     }
 
     const { content } = await req.json();
-    const postId = params.postId;
+    const { postId } = await params;
 
     try {
         const post = await prisma?.post.findUnique({

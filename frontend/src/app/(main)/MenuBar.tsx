@@ -1,4 +1,4 @@
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import prisma from "@/lib/prisma";
 import streamServerClient from "@/lib/stream";

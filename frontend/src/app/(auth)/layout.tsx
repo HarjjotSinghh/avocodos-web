@@ -1,4 +1,4 @@
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import { redirect } from "next/navigation";
 import { AutoConnectProvider } from "@/providers/AutoConnectProvider";
 import { WalletProvider } from "@/providers/AptosProvider";

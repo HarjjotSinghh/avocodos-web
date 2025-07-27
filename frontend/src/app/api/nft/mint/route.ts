@@ -9,8 +9,8 @@ import {
     AccountAddress
 } from "@aptos-labs/ts-sdk";
 import { formatDatePretty } from "@/lib/utils";
-import { validateRequest } from "@/auth";
-import { AssetType } from "@prisma/client/edge";
+import { validateRequest } from "@/app/(auth)/actions";
+import { AssetType } from "@prisma/client";
 
 const APTOS_NETWORK: Network = Network.TESTNET;
 const config = new AptosConfig({ network: APTOS_NETWORK });

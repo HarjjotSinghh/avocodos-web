@@ -1,4 +1,4 @@
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import streamServerClient from "@/lib/stream";
 
 export async function GET() {

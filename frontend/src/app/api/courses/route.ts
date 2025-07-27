@@ -1,4 +1,4 @@
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import prisma from "@/lib/prisma";
 import { CoursesPage } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -6,7 +6,6 @@ import { courseSchema } from "@/lib/validation";
 import { Redis } from "@upstash/redis";
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'edge';
 
 const redis = Redis.fromEnv();
 

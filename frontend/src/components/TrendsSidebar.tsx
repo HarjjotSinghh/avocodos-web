@@ -1,9 +1,8 @@
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import prisma from "@/lib/prisma";
 import { getUserDataSelect, UserData } from "@/lib/types";
 import { formatNumber } from "@/lib/utils";
 import { ChartNoAxesCombined, Loader2, Rss } from "lucide-react";
-import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
 import FollowButton from "./FollowButton";
@@ -95,7 +94,7 @@ async function WhoToFollow() {
   );
 }
 
-const getTrendingTopics = unstable_cache(
+const getTrendingTopics = 
   async () => {
     if (!prisma) {
       throw new Error("Ran into an error");
@@ -112,12 +111,7 @@ const getTrendingTopics = unstable_cache(
       hashtag: row.hashtag,
       count: Number(row.count)
     }));
-  },
-  ["trending_topics"],
-  {
-    revalidate: 3 * 60 * 60
-  }
-);
+  };
 
 async function TrendingTopics() {
   const trendingTopics = await getTrendingTopics();

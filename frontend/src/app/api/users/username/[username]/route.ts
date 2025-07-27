@@ -1,10 +1,9 @@
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'edge';
 
 // Initialize Redis client
 const redis = Redis.fromEnv();
@@ -22,8 +21,10 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { username } = await params;
+
     // Generate a unique cache key
-    const cacheKey = `user:${params.username}`;
+    const cacheKey = `user:${username}`;
 
     // Try to get results from Redis cache
     const cachedUser = await redis.get<string>(cacheKey);
@@ -41,10 +42,11 @@ export async function GET(
     if (!prisma) {
       return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
-
+    const { username: usernameParam } = await params;
+    
     // Fetch data from the database
-    const user = await prisma.user.findUnique({
-      where: { username: params.username },
+    const user = await prisma?.user.findUnique({
+      where: { username: usernameParam },
       include: {
         followers: {
           where: { followerId: currentUser.id },

@@ -24,8 +24,9 @@ export async function generateMetadata(
   { params }: PageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const { communityName } = await params;
   const community = await prisma?.community.findUnique({
-    where: { name: params.communityName },
+    where: { name: communityName },
     select: {
       name: true,
       description: true

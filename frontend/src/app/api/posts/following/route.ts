@@ -1,4 +1,4 @@
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude, PostsPage } from "@/lib/types";
 import { Redis } from "@upstash/redis";
@@ -10,7 +10,6 @@ const CACHE_TTL = 60 * 5; // 5 minutes
 const PAGE_SIZE = 10;
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'edge';
 
 export async function GET(req: NextRequest) {
   try {

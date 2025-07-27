@@ -1,4 +1,4 @@
-import { validateRequest } from "@/auth";
+import { validateRequest } from "@/app/(auth)/actions";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
 
@@ -13,7 +13,7 @@ export async function POST(
             return Response.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { communityName } = params;
+        const { communityName } = await params;
 
         const community = await prisma?.community.findUnique({
             where: { name: communityName },
@@ -63,7 +63,7 @@ export async function DELETE(
             return Response.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { communityName } = params;
+        const { communityName } = await params;
 
         const community = await prisma?.community.findUnique({
             where: { name: communityName },
