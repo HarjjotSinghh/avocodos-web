@@ -41,7 +41,7 @@ const getUser = cache(async (username: string, loggedInUserId: string) => {
       }
     },
     select: getUserDataSelect(loggedInUserId),
-    cacheStrategy: { ttl: 60 }
+    // cacheStrategy: { ttl: 60 }
   });
 
   if (!user) notFound();

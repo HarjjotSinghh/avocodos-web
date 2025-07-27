@@ -40,7 +40,7 @@ async function WhoToFollow() {
     },
     select: getUserDataSelect(user.id),
     take: 5,
-    cacheStrategy: { ttl: 60 }
+    // cacheStrategy: { ttl: 60 }
   });
 
   return (
@@ -79,7 +79,7 @@ async function WhoToFollow() {
             initialState={{
               followers: user._count.followers,
               isFollowedByUser: user.followers.some(
-                ({ followerId }) => followerId === user.id
+                ({ followerId }: { followerId: string }) => followerId === user.id
               )
             }}
           />

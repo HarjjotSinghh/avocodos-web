@@ -63,7 +63,7 @@ export async function isCommunityModerator(userId: string, communityName: string
   const community = await prisma?.community.findUnique({
     where: { name: communityName },
     include: { moderators: true },
-    cacheStrategy: { ttl: 60 },
+    // cacheStrategy: { ttl: 60 },
 
   });
 
@@ -78,7 +78,7 @@ export async function isCommunityMember(userId: string, communityName: string): 
         some: { id: userId },
       },
     },
-    cacheStrategy: { ttl: 60 },
+    // cacheStrategy: { ttl: 60 },
   });
 
   return !!membership;

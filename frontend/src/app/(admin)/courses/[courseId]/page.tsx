@@ -32,7 +32,7 @@ async function getCourse(courseId: string) {
         orderBy: { order: "asc" }
       }
     },
-    cacheStrategy: { ttl: 3600, swr: 86400 }
+    // cacheStrategy: { ttl: 3600, swr: 86400 }
   });
 
   if (!course) notFound();
@@ -43,7 +43,7 @@ async function getCourse(courseId: string) {
 export async function generateStaticParams() {
   const courses = await prisma?.course.findMany({
     select: { id: true },
-    cacheStrategy: { ttl: 3600 } // Cache for 1 hour
+    // cacheStrategy: { ttl: 3600 } // Cache for 1 hour
   });
 
   return (

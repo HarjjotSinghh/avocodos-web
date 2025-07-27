@@ -30,7 +30,7 @@ export async function GET(
           },
         },
       },
-      cacheStrategy: { ttl: 60 },
+      // cacheStrategy: { ttl: 60 },
     });
 
     if (!post) {
@@ -65,7 +65,7 @@ export async function POST(
       select: {
         userId: true,
       },
-      cacheStrategy: { ttl: 60 },
+      // cacheStrategy: { ttl: 60 },
     });
 
     if (!post) {
@@ -123,7 +123,7 @@ export async function DELETE(
       select: {
         userId: true,
       },
-      cacheStrategy: { ttl: 60 },
+      // cacheStrategy: { ttl: 60 },
     });
 
     if (!post) {

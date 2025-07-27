@@ -10,7 +10,7 @@ import {
 } from "@aptos-labs/ts-sdk";
 import { formatDatePretty } from "@/lib/utils";
 import { validateRequest } from "@/auth";
-import { AssetType } from "@prisma/client";
+import { AssetType } from "@prisma/client/edge";
 
 const APTOS_NETWORK: Network = Network.TESTNET;
 const config = new AptosConfig({ network: APTOS_NETWORK });
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
     const userData = await prisma?.user.findUnique({
         where: { id: user.id },
-        cacheStrategy: { ttl: 60 },
+        // cacheStrategy: { ttl: 60 },
 
     });
 
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
 
     const course = await prisma?.course.findUnique({
         where: { id: courseId },
-        cacheStrategy: { ttl: 60 }
+        // cacheStrategy: { ttl: 60 }
     });
 
     if (!course) {

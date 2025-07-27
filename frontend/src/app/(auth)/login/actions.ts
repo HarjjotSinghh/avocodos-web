@@ -21,7 +21,7 @@ export async function login(
           mode: "insensitive",
         },
       },
-      cacheStrategy: { ttl: 60 },
+      // cacheStrategy: { ttl: 60 },
     });
 
     if (!existingUser || !existingUser.passwordHash) {

@@ -18,7 +18,7 @@ export async function POST(
         const community = await prisma?.community.findUnique({
             where: { name: communityName },
             include: { members: true },
-            cacheStrategy: { ttl: 60 },
+            // cacheStrategy: { ttl: 60 },
 
         });
 
@@ -68,7 +68,7 @@ export async function DELETE(
         const community = await prisma?.community.findUnique({
             where: { name: communityName },
             include: { members: true },
-            cacheStrategy: { ttl: 60 },
+            // cacheStrategy: { ttl: 60 },
 
         });
 
